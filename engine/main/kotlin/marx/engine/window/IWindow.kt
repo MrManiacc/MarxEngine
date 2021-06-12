@@ -9,4 +9,5 @@ interface IWindow {
     var vsync: Boolean
     fun swapBuffers()
     fun pollInput()
+    var handle: Long
 }

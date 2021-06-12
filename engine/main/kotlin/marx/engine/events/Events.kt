@@ -1,5 +1,6 @@
 package marx.engine.events
 
+import imgui.*
 import marx.engine.*
 import marx.engine.window.*
 
@@ -7,6 +8,14 @@ import marx.engine.window.*
  * This stores all of our engine level abstract events.
  */
 object Events {
+
+    /**
+     * Used for imgui related events
+     */
+    class Gui {
+        class ViewportOverlay : Event()
+
+    }
 
     /**
      * This stores all of our window events
@@ -60,6 +69,7 @@ object Events {
 abstract class Event : IEvent {
     var isHandled: Boolean = false
         private set
+
     fun handled() = true.also { isHandled = it }
 }
 

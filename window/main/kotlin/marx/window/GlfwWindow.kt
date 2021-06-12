@@ -20,7 +20,7 @@ data class GlfwWindow(
 ) : IWindow {
     private val log = KotlinLogging.logger {}
 
-    private var handle: Long = -1
+    override var handle: Long = -1
 
     override val shouldClose: Boolean
         get() = GLFW.glfwWindowShouldClose(handle)

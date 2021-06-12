@@ -3,7 +3,9 @@ package marx.engine
 import dorkbox.messageBus.*
 import dorkbox.messageBus.annotations.*
 import marx.engine.events.*
+import marx.engine.events.Events.App.Initialized
 import marx.engine.events.Events.App.Update
+import marx.engine.input.*
 import marx.engine.layer.*
 import marx.engine.window.*
 
@@ -13,6 +15,7 @@ import marx.engine.window.*
 interface Application : IBus, LayerStack {
     val eventbus: MessageBus
     val window: IWindow
+    val input: IInput
     var isRunning: Boolean
     var gameTime: Double
     var startTime: Long
@@ -54,8 +57,11 @@ interface Application : IBus, LayerStack {
      * This is called upon the start of the application
      */
     fun start() {
+        instance = this
+        subscribe(input)
+        instance = this
         isRunning = true
-        publish(Events.App.Initialized(this))
+        publish(Initialized(this))
         startTime = currentTime
         while (isRunning && !window.shouldClose) {
             val now = currentTime
@@ -77,6 +83,7 @@ interface Application : IBus, LayerStack {
 
     companion object {
         private val updateEvent: Events.App.Update = Events.App.Update(0.1, 1.0)
+        lateinit var instance: Application
 
         fun updateOf(gameTime: Double, delta: Double): Events.App.Update {
             updateEvent.gameTime = gameTime
@@ -84,6 +91,7 @@ interface Application : IBus, LayerStack {
             return updateEvent
         }
     }
+
 
 }
 
