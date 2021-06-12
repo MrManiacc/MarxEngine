@@ -10,8 +10,8 @@ fun TomlParseResult.getChildMap(key: String): MutableMap<String, String> {
     val array = getTable(key) ?: return mutableMapOf()
     val map = HashMap<String, String>()
     array.keySet().forEach {
-        val value = array.getString(it)
-        if (value != null)
+        val value = array.get(it)
+        if (value != null && value is String)
             map[it] = value
     }
     return map

@@ -6,6 +6,7 @@ import marx.plugin.MarxPlugin
 import org.gradle.kotlin.dsl.*
 import marx.plugin.data.ModuleFile
 import java.io.*
+import marx.plugin.utils.*
 
 class MarxRegistry : Plugin<Project> {
     /**
@@ -14,9 +15,8 @@ class MarxRegistry : Plugin<Project> {
      * @param project The target object
      */
     override fun apply(project: Project) {
-        val registry = Registry()
         project.subprojects {
-            val modFile: ModuleFile?
+            var modFile: ModuleFile? = null
             if (!extra.has("modFile")) {
                 val file = File(projectDir, "mod.toml")
                 if (file.exists()) {
@@ -30,8 +30,7 @@ class MarxRegistry : Plugin<Project> {
                     modFile = moduleFile
                 }
             }
-        }
-        project.subprojects {
+            modFile?.mapGlobals(registryFor(this).globalExtensions)
             apply(plugin = "kotlin")
             apply<MarxPlugin>()
         }
@@ -39,6 +38,7 @@ class MarxRegistry : Plugin<Project> {
 
     data class Registry(val urns: MutableMap<Urn, Project> = HashMap()) {
         val isEmpty: Boolean = urns.isEmpty()
+        val globalExtensions: MutableMap<String, String> = HashMap()
 
         fun has(urn: Urn): Boolean = urns.containsKey(urn)
 

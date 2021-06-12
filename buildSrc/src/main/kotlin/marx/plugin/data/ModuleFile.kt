@@ -34,10 +34,13 @@ class ModuleFile(val project: Project) {
         private set
     var extensions: MutableMap<String, String> = parsed.getChildMap("ext")
         private set
+    var sharedExtensions: MutableMap<String, String> = parsed.getChildMap("ext.shared")
+        private set
     private var modules: List<String> = parsed.getStringList("build.modules")
     val imports: MutableMap<Urn, Project> = HashMap()
     val isRunnable: Boolean = parsed.contains("main.entryPoint")
     var entryPoint: String = parsed.getString("main.entryPoint") ?: "undefined"
+
     val platform: String
         get() = when (OperatingSystem.current()!!) {
             OperatingSystem.WINDOWS -> "windows"
@@ -57,8 +60,10 @@ class ModuleFile(val project: Project) {
      */
     fun map() {
         mapDefaultExtensions()
-        mapExtensions()
-        registryFor(project) += this
+        mapExtensions(extensions)
+        val registry = registryFor(project)
+        registry += this
+        mapGlobals(registry.globalExtensions)
     }
 
     fun postMap() {
@@ -69,6 +74,7 @@ class ModuleFile(val project: Project) {
             if (registry.has(urn))
                 imports[urn] = registry[urn]!!
         }
+        mapExtensions(registry.globalExtensions)
     }
 
     private fun mapDefaultExtensions() {
@@ -81,30 +87,46 @@ class ModuleFile(val project: Project) {
         }
     }
 
-    private fun mapExtensions() {
-        id = mapString(id)
-        version = mapString(version)
-        sources = mapStringList(sources)
-        assets = mapStringList(assets)
-        repos = mapStringList(repos)
-        platforms = mapStringList(platforms)
-        implements = mapStringList(implements)
-        runtimes = mapStringList(runtimes)
-        if (isRunnable) this.entryPoint = mapString(entryPoint)
+    private fun mapExtensions(map: Map<String, String>) {
+        id = mapString(id, map)
+        version = mapString(version, map)
+        sources = mapStringList(sources, map)
+        assets = mapStringList(assets, map)
+        repos = mapStringList(repos, map)
+        platforms = mapStringList(platforms, map)
+        implements = mapStringList(implements, map)
+        runtimes = mapStringList(runtimes, map)
+        if (isRunnable) this.entryPoint = mapString(entryPoint, map)
     }
 
-    private fun mapString(stringIn: String): String {
+    /**
+     * This will put all of our shared values in the global map
+     */
+    fun mapGlobals(map: MutableMap<String, String>) {
+        for (entry in this.sharedExtensions) {
+            val value = mapString(entry.value, extensions)
+            map[entry.key] = value
+        }
+    }
+
+    private fun mapString(stringIn: String, map: Map<String, String>): String {
         var string = stringIn
-        extensions.forEach { (t, u) ->
+        map.forEach { (t, u) ->
             if (string.contains("$$t"))
                 string = string.replace("$$t", u)
         }
         return string
     }
 
-    private fun mapStringList(listIn: List<String>): List<String> {
+    private fun mapStringList(listIn: List<String>, map: Map<String, String>): List<String> {
         val output = ArrayList<String>()
-        listIn.forEach { output.add(mapString(it)) }
+        listIn.forEach {
+            if (it.contains(",")) {
+                val split = it.split(",")
+                println(split)
+                split.forEach { instance -> output.add(mapString(instance.trim(), map)) }
+            } else output.add(mapString(it, map))
+        }
         return output
     }
 

@@ -1,13 +1,16 @@
 package marx.engine
 
 import dorkbox.messageBus.*
+import dorkbox.messageBus.annotations.*
 import marx.engine.events.*
+import marx.engine.events.Events.App.Update
+import marx.engine.layer.*
 import marx.engine.window.*
 
 /**
  * This is the main entry for the marx engine. It
  */
-interface Application : IBus {
+interface Application : IBus, LayerStack {
     val eventbus: MessageBus
     val window: IWindow
     var isRunning: Boolean
@@ -31,30 +34,51 @@ interface Application : IBus {
         eventbus.shutdown()
     }
 
-    fun create() {
+    @Subscribe
+    fun handleEvents(event: Event) {
+        val itr = layers.listIterator()
+        // `hasPrevious()` returns true if the list has a previous element
+        while (itr.hasPrevious()) {
+            val layer = itr.previous()
+            layer.onEvent(event)
+            if (event.isHandled) break
+        }
+    }
+
+    /**
+     * Called upon updating of the game
+     */
+    fun onUpdate(event: Update) = forEach { it.onUpdate(event) }
+
+    /**
+     * This is called upon the start of the application
+     */
+    fun start() {
         isRunning = true
-        publish(Events.AppCreatedEvent(this))
+        publish(Events.App.Initialized(this))
         startTime = currentTime
         while (isRunning && !window.shouldClose) {
             val now = currentTime
             val delta = (now - startTime) / 1000.0
             gameTime += delta
             startTime = now
-            publish(updateOf(gameTime, delta / 1000.0))
+            val event = updateOf(gameTime, delta / 1000.0)
+            onUpdate(event) //Called before the global event
+            publish(event)
         }
         destroy()
     }
 
     fun destroy() {
-        publish(Events.AppShutdownEvent(this))
+        publish(Events.App.Shutdown(this))
         shutdown()
         isRunning = false
     }
 
     companion object {
-        private val updateEvent: Events.AppUpdateEvent = Events.AppUpdateEvent(0.1, 1.0)
+        private val updateEvent: Events.App.Update = Events.App.Update(0.1, 1.0)
 
-        fun updateOf(gameTime: Double, delta: Double): Events.AppUpdateEvent {
+        fun updateOf(gameTime: Double, delta: Double): Events.App.Update {
             updateEvent.gameTime = gameTime
             updateEvent.delta = delta
             return updateEvent

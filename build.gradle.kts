@@ -7,13 +7,9 @@ apply<MarxRegistry>()
 
 group = "marx.plugin"
 version = "1.0-SNAPSHOT"
-
-repositories {
-    mavenCentral()
-}
-
 subprojects {
     repositories {
         mavenCentral()
+        maven("https://jitpack.io") // should be the last entry
     }
 }

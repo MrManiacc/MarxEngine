@@ -1,8 +1,7 @@
 #Allows for string replacment extensions.
 [ext]
 dir = "__root_dir__/window" #gets the current dir of the module.toml
-lwjgl_natives = "natives-__platform__" #gets the current dir of the module.toml
-joml_version = "1.10.1"
+
 #The root build structure for the module.
 [main]
 id = "window"
@@ -26,24 +25,17 @@ modules = [
 #thus allowing child jars to drop the version number off the end. They must match
 #the group tag
 platforms = [
-    "org.lwjgl:lwjgl-bom:3.2.3"
+    "$lwjgl_bom"
 ]
 
 implements = [
-    "org.reflections:reflections:0.9.12",
-    "com.google.guava:guava:30.1.1-jre",
-    "org.lwjgl:lwjgl",
-    "org.lwjgl:lwjgl-glfw",
-    "org.lwjgl:lwjgl-opengl",
-    "org.joml:joml:$joml_version",
-    "com.dorkbox:MessageBus:2.4"
+    "$lwjgl",
+    "$guava",
+    "$bus",
+    "$logger"
 ]
-
-
 
 #The depencies that are to be sent to the runtime configuration. Useful for c++ binaries
 runtimes = [
-    "org.lwjgl:lwjgl::$lwjgl_natives",
-    "org.lwjgl:lwjgl-glfw::$lwjgl_natives",
-    "org.lwjgl:lwjgl-opengl::$lwjgl_natives",
+    "$lwjgl_native"
 ]

@@ -1,13 +1,13 @@
 #Allows for string replacment extensions.
 [ext]
-dir = "__root_dir__/sandbox" #gets the current dir of the module.toml
+dir = "__root_dir__/opengl" #gets the current dir of the module.toml
 lwjgl_natives = "natives-__platform__" #gets the current dir of the module.toml
 joml_version = "1.10.1"
 logger_version = "2.0.8"
 
 #The root build structure for the module.
 [main]
-id = "sandbox"
+id = "opengl"
 version = "1.0.0-SNAPSHOT"
 srcDirs = ["$dir/main/kotlin"]
 resDirs = ["$dir/main/assets"]
@@ -20,8 +20,6 @@ repos = ["https://nexus.devsrsouza.com.br/repository/maven-public/"]
 # going to want to have the engine, and the at the very least the window modules
 modules = [
     "mod:engine/",
-    "mod:window/",
-    "mod:opengl/",
 ]
 
 # This is imported from the engine's global extenisions.
@@ -32,9 +30,8 @@ implements = [
     "$lwjgl",
     "$guava",
     "$bus",
-    "$logger",
-    "$imgui"
+    "$logger"
 ]
 
 #The depencies that are to be sent to the runtime configuration. Useful for c++ binaries
-runtimes = ["$lwjgl_native", "$imgui_native"]
+runtimes = ["$lwjgl_native"]

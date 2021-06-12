@@ -24,6 +24,16 @@ class MarxPlugin : Plugin<Project> {
         }
     }
 
+    private fun forEach(input: String, callback: (string: String) -> Unit) {
+        if (!input.contains(",")) callback(input)
+        else {
+            val split = input.split(",")
+            split.forEach {
+                callback(it.trim())
+            }
+        }
+    }
+
     /**
      * Apply this plugin to the given target object.
      *
@@ -38,35 +48,37 @@ class MarxPlugin : Plugin<Project> {
 
         target.afterEvaluate {
             modFile.postMap()
-            //
-
-            //
-            //            mainSpec.allJava.setSrcDirs(srcDirs)
-            //            mainSpec.resources.setSrcDirs(resDirs)
-
             target.group = modFile.id
             target.version = modFile.version
 
             modFile.repos.forEach {
-                target.repositories.maven(it)
+                forEach(it) { str ->
+                    target.repositories.maven(str)
+                }
             }
+
             modFile.platforms.forEach {
-                target.configurations.getByName("compile").dependencies.add(
-                    project.dependencies.platform(it)
-                )
+                forEach(it) { str ->
+                    target.configurations.getByName("compile").dependencies.add(
+                        project.dependencies.platform(str)
+                    )
+                }
 
             }
 
             modFile.implements.forEach {
-                println(it)
-                target.configurations.getByName("implementation").dependencies.add(
-                    target.dependencies.add("implementation", it)
-                )
+                forEach(it) { str ->
+                    target.configurations.getByName("implementation").dependencies.add(
+                        target.dependencies.add("implementation", str)
+                    )
+                }
             }
             modFile.runtimes.forEach {
-                target.configurations.getByName("runtime").dependencies.add(
-                    target.dependencies.add("runtime", it)
-                )
+                forEach(it) { str ->
+                    target.configurations.getByName("runtime").dependencies.add(
+                        target.dependencies.add("runtime", str)
+                    )
+                }
             }
 
             modFile.imports.forEach { (_, project) ->
@@ -97,8 +109,6 @@ class MarxPlugin : Plugin<Project> {
                 }
             }
         }
-
-
     }
 
     private fun preEval(target: Project) {

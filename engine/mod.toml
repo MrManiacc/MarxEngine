@@ -2,9 +2,26 @@
 [ext]
 dir = "__root_dir__/engine" #gets the current dir of the module.toml
 engine_version = "0.0.1-SNAPSHOT"
-lwjgl_natives = "natives-__platform__" #gets the current dir of the module.toml
+natives = "natives-__platform__" #gets the current dir of the module.toml
+lwjgl_version = "3.2.3"
 joml_version = "1.10.1"
-kotlin-logging_version = "2.0.8"
+imgui_version = "1.83.0"
+kotlin_logging_version = "2.0.8"
+guava_version = "30.1.1-jre"
+message_bus_version = "2.4"
+slf4j_version = "1.7.5"
+
+# Allows for globalized extenions. This can use local extenions. To access a global extenion simply use the
+[ext.shared]
+logger = "io.github.microutils:kotlin-logging-jvm:$kotlin_logging_version,org.slf4j:slf4j-api:$slf4j_version,org.slf4j:slf4j-log4j12:$slf4j_version"
+lwjgl_bom = "org.lwjgl:lwjgl-bom:$lwjgl_version"
+lwjgl = "org.lwjgl:lwjgl,org.lwjgl:lwjgl-glfw,org.lwjgl:lwjgl-opengl,org.joml:joml:$joml_version"
+lwjgl_native = "org.lwjgl:lwjgl::$natives,org.lwjgl:lwjgl-glfw::$natives,org.lwjgl:lwjgl-opengl::$natives"
+bus = "com.dorkbox:MessageBus:$message_bus_version"
+guava = "com.google.guava:guava:$guava_version"
+imgui = "io.github.spair:imgui-java-binding:$imgui_version,io.github.spair:imgui-java-lwjgl3:$imgui_version"
+imgui_native = "io.github.spair:imgui-java-$natives-ft:$imgui_version"
+repos = "https://nexus.devsrsouza.com.br/repository/maven-public/"
 
 #The root build structure for the module.
 [main]
@@ -13,37 +30,28 @@ version = "1.0.0-SNAPSHOT"
 srcDirs = ["$dir/main/kotlin"]
 resDirs = ["$dir/main/assets"]
 
+#All of the information related to the local build
 [build]
-##The repositories to be mapped to the module.
-##By default this already includes mavenCentral.
-repos = [
-    "https://nexus.devsrsouza.com.br/repository/maven-public/"
-]
+repos = ["$repos"] # The repositories to be mapped to the module.
 
 #Imports local projects. Use urns here
 modules = []
-#A platform is something that allows the speicfication of a single version number,
-#thus allowing child jars to drop the version number off the end. They must match
-#the group tag
-platforms = [
-    "org.lwjgl:lwjgl-bom:3.2.3"
-]
 
+# A platform is something that allows the speicfication of a single version number,
+# thus allowing child jars to drop the version number off the end. They must match the group tag
+platforms = ["$lwjgl_bom"]
+
+#The go to configuration. Can be any typed out gradle depencdcey, and can be replaced with extenions (either local or global)
 implements = [
-    "org.reflections:reflections:0.9.12",
-    "com.google.guava:guava:30.1.1-jre",
-    "org.lwjgl:lwjgl",
-    "org.lwjgl:lwjgl-glfw",
-    "org.lwjgl:lwjgl-opengl",
-    "org.joml:joml:$joml_version",
-    "com.dorkbox:MessageBus:2.4"
+    "$lwjgl",
+    "$guava",
+    "$bus",
+    "$logger",
+    "$imgui"
 ]
-
-
 
 #The depencies that are to be sent to the runtime configuration. Useful for c++ binaries
 runtimes = [
-    "org.lwjgl:lwjgl::$lwjgl_natives",
-    "org.lwjgl:lwjgl-glfw::$lwjgl_natives",
-    "org.lwjgl:lwjgl-opengl::$lwjgl_natives",
+    "$lwjgl_native",
+    "$imgui_native"
 ]

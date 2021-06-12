@@ -4,57 +4,125 @@ import dorkbox.messageBus.annotations.*
 import marx.engine.*
 import marx.engine.events.*
 import marx.engine.window.*
+import mu.*
 import org.lwjgl.glfw.*
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.opengl.*
 import org.lwjgl.opengl.GL11.*
 import org.lwjgl.system.MemoryStack.*
 import org.lwjgl.system.MemoryUtil.*
-import java.awt.SystemColor.*
 
 data class GlfwWindow(
     override val width: Int = 1920,
     override val height: Int = 1080,
     override val title: String = "glfw-window",
-    val vsync: Boolean = false,
     val app: Application
 ) : IWindow {
+    private val log = KotlinLogging.logger {}
 
     private var handle: Long = -1
-    private val keyEvent = Events.AppKeyEvent(this, -1, -1, -1, -1)
-    private val mouseEvent = Events.AppMouseEvent(this, -1, -1, -1)
-    private val resizeEvent = Events.WindowResizedEvent(this, -1, -1)
+
     override val shouldClose: Boolean
         get() = GLFW.glfwWindowShouldClose(handle)
+    override var fullscreen: Boolean
+        get() = false
+        set(value) {}
+    override var vsync: Boolean
+        get() = false
+        set(value) {}
+
+    private val keyEvent = Events.Input.KeyEvent(this, -1, -1, -1, -1)
+    private val keyPressEvent = Events.Input.KeyPress(this, -1, -1)
+    private val keyReleaseEvent = Events.Input.KeyRelease(this, -1, -1)
+    private val keyRepeatEvent = Events.Input.KeyRepeat(this, -1, -1)
+    private val mousePressEvent = Events.Input.MousePress(this, -1, -1)
+    private val mouseEvent = Events.Input.MouseEvent(this, -1, -1, -1)
+    private val mouseReleaseEvent = Events.Input.MouseRelease(this, -1, -1)
+    private val mouseRepeatEvent = Events.Input.MouseRepeat(this, -1, -1)
+    private val mouseScrollEvent = Events.Input.MouseScroll(this, 0.0f, 0.0f)
+    private val mouseMoveEvent = Events.Input.MouseMove(this, 0.0f, 0.0f)
+    private val resizeEvent = Events.Window.Resize(this, -1, -1)
 
     @Subscribe
-    fun onInitialize(event: Events.AppCreatedEvent) {
+    fun onInitialize(event: Events.App.Initialized) {
+        log.info { "initializing the window: $this" }
         initWindow()
         initCallbacks()
         finalizeWindow()
         presentWindow()
-        app.publish(Events.WindowCreatedEvent(this))
+        app.publish(Events.Window.Initialized(this))
     }
 
     private fun initCallbacks() {
+        glfwSetScrollCallback(handle) { _, xOffset, yOffset ->
+            mouseScrollEvent.xOffset = xOffset.toFloat()
+            mouseScrollEvent.yOffset = yOffset.toFloat()
+            app.publish(mouseMoveEvent)
+        }
+
+        glfwSetCursorPosCallback(handle) { _, x, y ->
+            mouseMoveEvent.x = x.toFloat()
+            mouseMoveEvent.y = y.toFloat()
+            app.publish(mouseMoveEvent)
+        }
+
         glfwSetKeyCallback(handle) { _, key, scancode, action, mods ->
             keyEvent.key = key
-            keyEvent.scancode = scancode
             keyEvent.action = action
+            keyEvent.scancode = scancode
             keyEvent.mods = mods
             app.publish(keyEvent)
+            when (action) {
+                0 -> {
+                    keyPressEvent.key = key
+                    keyPressEvent.mods = mods
+                    app.publish(keyPressEvent)
+                }
+                1 -> {
+                    keyReleaseEvent.key = key
+                    keyReleaseEvent.mods = mods
+                    app.publish(keyReleaseEvent)
+                }
+                2 -> {
+                    keyRepeatEvent.key = key
+                    keyRepeatEvent.mods = mods
+                    app.publish(keyRepeatEvent)
+                }
+
+            }
         }
         glfwSetMouseButtonCallback(handle) { _, button, action, mods ->
             mouseEvent.button = button
             mouseEvent.action = action
             mouseEvent.mods = mods
             app.publish(mouseEvent)
+            when (action) {
+                0 -> {
+                    mousePressEvent.button = button
+                    mousePressEvent.mods = mods
+                    app.publish(mousePressEvent)
+                }
+                1 -> {
+                    mouseReleaseEvent.button = button
+                    mouseReleaseEvent.mods = mods
+                    app.publish(mouseReleaseEvent)
+                }
+                2 -> {
+                    mouseRepeatEvent.button = button
+                    mouseRepeatEvent.mods = mods
+                    app.publish(mouseRepeatEvent)
+                }
+            }
         }
 
         glfwSetFramebufferSizeCallback(handle) { _, width, height ->
             resizeEvent.width = width
             resizeEvent.height = height
             app.publish(resizeEvent)
+        }
+
+        glfwSetWindowCloseCallback(handle) { _ ->
+            app.publish(Events.Window.Destroy(this))
         }
     }
 
@@ -113,30 +181,24 @@ data class GlfwWindow(
         glfwDefaultWindowHints()
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE)
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE)
+        glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE)
         handle = glfwCreateWindow(width, height, title, NULL, NULL)
         if (handle == NULL)
             throw  RuntimeException("Failed to create the GLFW window");
 
     }
 
-    @Subscribe
-    fun onUpdate(event: Events.AppUpdateEvent) {
-        if (!this.shouldClose) {
-            glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT) // clear the framebuffer
-            glfwSwapBuffers(handle) // swap the color buffers
+    override fun swapBuffers() {
+        glfwSwapBuffers(handle)
+    }
 
-            // Poll for window events. The key callback above will only be
-            // invoked during this call.
-
-            // Poll for window events. The key callback above will only be
-            // invoked during this call.
-            glfwPollEvents()
-
-        }
+    override fun pollInput() {
+        glfwPollEvents()
     }
 
     @Subscribe
-    fun onClose(event: Events.AppShutdownEvent) {
-
+    fun onClose(event: Events.App.Shutdown) {
+        glfwDestroyWindow(handle)
     }
+
 }
