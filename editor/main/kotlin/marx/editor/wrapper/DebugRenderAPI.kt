@@ -8,6 +8,7 @@ import imgui.gl3.*
 import imgui.glfw.*
 import imgui.type.*
 import marx.engine.render.*
+import marx.engine.render.scene.*
 import marx.engine.utils.*
 import marx.engine.window.*
 import marx.opengl.*
@@ -19,7 +20,7 @@ import imgui.internal.flag.ImGuiDockNodeFlags as ImGuiDockNodeInternalFlags
 /**
  * This is kind of a wrapper around imgui for ease of use with kotlin.
  */
-class DebugRenderAPI(window: IWindow) : GLRenderAPI(window) {
+class DebugRenderAPI(window: IWindow, scene: RenderScene) : GLRenderAPI(window, scene) {
     /**The constant dockspace id for the main dockspace.**/
     private val dockspaceId = "main_dockspace"
 

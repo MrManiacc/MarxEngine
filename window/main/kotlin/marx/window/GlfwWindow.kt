@@ -35,7 +35,7 @@ data class GlfwWindow(
     private var mode: GLFWVidMode? = null
     private val log = KotlinLogging.logger {}
     override var handle: Long = -1
-    private val renderAPI: Renderer.RenderAPI get() = app.renderAPI
+    private val renderAPI: RenderAPI get() = app.renderAPI
     override val shouldClose: Boolean get() = glfwWindowShouldClose(handle)
     override val size: Pair<Int, Int>
         get() {

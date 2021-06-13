@@ -1,17 +1,18 @@
 package marx.opengl
 
 import marx.engine.render.*
-import marx.engine.render.Renderer.RenderAPI.*
+import marx.engine.render.Buffer.*
+import marx.engine.render.scene.*
 import marx.engine.window.*
 import org.lwjgl.glfw.*
 import org.lwjgl.opengl.*
 import org.lwjgl.opengl.GL11.*
+import org.lwjgl.system.*
 
 /**
  * This is the backend render context for opengl rendering related functionality
  */
-open class GLRenderAPI(val window: IWindow) : Renderer.RenderAPI() {
-
+open class GLRenderAPI(val window: IWindow, scene: RenderScene) : RenderAPI(GLRenderCommand(window), scene) {
     /**
      * Initialize the given graphics context
      */
@@ -27,43 +28,10 @@ open class GLRenderAPI(val window: IWindow) : Renderer.RenderAPI() {
     }
 
     /**
-     * Swap the given buffers of the graphics context
+     * Draws the given vertex array instanced, meaning we can render many of these statically.
      */
-    override fun swap() {
-        window.swapBuffers()
+    override fun drawIndexed(array: VertexArray) {
+        glDrawElements(GL_TRIANGLES, array[IndexBuffer::class].indices.size, GL_UNSIGNED_INT, MemoryUtil.NULL)
     }
-
-    /**
-     * Poll the input for the graphics context
-     */
-    override fun poll() {
-        window.pollInput()
-    }
-
-    /**
-     * Allows for viewport resizing
-     */
-    override fun viewport(size: Pair<Int, Int>, pos: Pair<Int, Int>) {
-        glViewport(pos.first, pos.second, size.first, size.second)
-    }
-
-    /**
-     * Clear the screen with the given color
-     */
-    override fun clear(color: FloatArray?, clearFlags: ClearFlags) {
-        when (clearFlags) {
-            ClearFlags.COLOR -> {
-                glClear(GL_COLOR_BUFFER_BIT)
-            }
-            ClearFlags.DEPTH -> {
-                glClear(GL_DEPTH_BUFFER_BIT)
-            }
-            ClearFlags.COLOR_DEPTH -> {
-                glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
-            }
-        }
-        if (color != null) glClearColor(color[0], color[1], color[2], color[3])
-    }
-
 
 }

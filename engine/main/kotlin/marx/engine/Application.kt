@@ -10,13 +10,14 @@ import marx.engine.events.Events.Window.Resize
 import marx.engine.input.*
 import marx.engine.layer.*
 import marx.engine.render.*
+import marx.engine.render.scene.*
 import marx.engine.window.*
 import kotlin.reflect.*
 
 /**
  * This is the main entry for the marx engine. It
  */
-interface Application<API : Renderer.RenderAPI> : IBus, LayerStack {
+interface Application<API : RenderAPI> : IBus, LayerStack {
     val eventbus: MessageBus
     val window: IWindow
     val input: IInput
@@ -27,6 +28,8 @@ interface Application<API : Renderer.RenderAPI> : IBus, LayerStack {
 
     /**This will get the render api for the specified [rendererType]**/
     val renderAPI: API
+    /**This is the root scene for the application**/
+    val scene: RenderScene
 
     override fun subscribe(listener: Any) = eventbus.subscribe(listener)
 
@@ -59,14 +62,13 @@ interface Application<API : Renderer.RenderAPI> : IBus, LayerStack {
             layer.onUpdate(event)
         }
 
-        renderAPI.swap()
-        renderAPI.poll()
+        renderAPI.command.swap()
+        renderAPI.command.poll()
     }
 
     @Subscribe
-    fun onResize(event: Resize) {
-        renderAPI.viewport(event.width to event.height)
-    }
+    fun onResize(event: Resize) =
+        renderAPI.command.viewport(event.width to event.height, 0 to 0)
 
     /**
      * This is called upon the start of the application
@@ -79,16 +81,26 @@ interface Application<API : Renderer.RenderAPI> : IBus, LayerStack {
         publish(Initialized(this))
         startTime = currentTime
         renderAPI.init()
+        update()
+        destroy()
+    }
+
+    /**
+     * This is the main update loop.
+     */
+    fun update() {
         while (isRunning && !window.shouldClose) {
+            renderAPI.command.clear(floatArrayOf(0.1f, 0.1f, 0.1f))
+
             val now = currentTime
             val delta = (now - startTime) / 1000.0
             gameTime += delta
             startTime = now
-            val event = updateOf(gameTime, delta / 1000.0)
-            onUpdate(event) //Called before the global event
-            publish(event)
+            updateEvent.gameTime = gameTime
+            updateEvent.deltaTime = delta
+            onUpdate(updateEvent) //Called before the global event
+            publish(updateEvent)
         }
-        destroy()
     }
 
     fun destroy() {
@@ -98,23 +110,13 @@ interface Application<API : Renderer.RenderAPI> : IBus, LayerStack {
     }
 
     @Subscribe
-    fun destroy(event: Window.Destroy) {
-        renderAPI.dispose()
-    }
+    fun destroy(event: Window.Destroy) = renderAPI.dispose()
 
-    override fun shutdown() {
-        eventbus.shutdown()
-    }
+    override fun shutdown() = eventbus.shutdown()
 
     companion object {
-        private val updateEvent: Events.App.Update = Events.App.Update(0.1, 1.0)
+        private val updateEvent: Update = Update(0.1, 1.0)
         lateinit var instance: Application<*>
-
-        fun updateOf(gameTime: Double, delta: Double): Events.App.Update {
-            updateEvent.gameTime = gameTime
-            updateEvent.deltaTime = delta
-            return updateEvent
-        }
     }
 
 

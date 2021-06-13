@@ -3,22 +3,22 @@ package marx.sandbox
 import com.google.common.collect.*
 import dorkbox.messageBus.*
 import dorkbox.messageBus.annotations.*
-import imgui.*
-import marx.editor.*
+import marx.editor.camera.*
+import marx.editor.layer.*
 import marx.editor.wrapper.*
 import marx.engine.*
 import marx.engine.events.*
-import marx.engine.events.Events.App
-import marx.engine.events.Events.Gui.*
 import marx.engine.events.Events.Input.KeyPress
 import marx.engine.events.Events.Window
 import marx.engine.events.Events.Window.Initialized
 import marx.engine.input.*
 import marx.engine.layer.*
 import marx.engine.render.*
-import marx.engine.render.Renderer.RenderAPI.ClearFlags.*
+import marx.engine.render.camera.*
+import marx.engine.render.scene.*
 import marx.engine.window.*
 import marx.opengl.*
+import marx.opengl.scene.*
 import marx.sandbox.layer.*
 import marx.window.*
 import mu.*
@@ -36,15 +36,22 @@ object Sandbox : Application<GLRenderAPI> {
     override var isRunning: Boolean = false
     override var gameTime: Double = 0.0
     override var startTime: Long = System.currentTimeMillis()
-    override val layers: MutableList<Layer> = Lists.newArrayList()
+    override val layers: MutableList<Layer<*>> = Lists.newArrayList()
     override var insertIndex: Int = 0
-    val color = floatArrayOf(0.239215f, 0.2549019f, 0.278431372f, 1f)
+
+    /**==================Scene==================**/
+
+    val editorCamera: Camera<OrthographicCamera> = OrthographicCamera(-1.6f, 1.6f, -0.9f, 0.9f)
+    val debugScene: RenderScene = GLScene(DebugRenderAPI::class)
+    val gameCamera: Camera<OrthographicCamera> get() = editorCamera //TODO make game camera
+    override val scene: RenderScene = GLScene(GLRenderAPI::class)
 
     /**==================Render==================**/
-    override val renderAPI: GLRenderAPI = GLRenderAPI(window).apply(Renderer::register)
-    val debugAPI: DebugRenderAPI = DebugRenderAPI(window).apply(Renderer::register)
-    private val editorLayer: Layer = LayerImGui(this)
-    private val debugLayer: Layer = LayerDebug(this)
+    override val renderAPI: GLRenderAPI = GLRenderAPI(window, scene).apply(Renderer::register)
+    val debugAPI: DebugRenderAPI = DebugRenderAPI(window, debugScene).apply(Renderer::register)
+    private val editorLayer: Layer<DebugRenderAPI> = LayerImGui(this)
+    private val debugLayer: Layer<DebugRenderAPI> = LayerDebug(this)
+    private val simulateLayer: Layer<GLRenderAPI> = LayerSimulate(this)
 
     /**
      * We must subscribe anything important here. In the future any entity systems
@@ -59,14 +66,8 @@ object Sandbox : Application<GLRenderAPI> {
     /**
      * This is used to initialized our layers
      */
-    @Subscribe fun onInit(event: Initialized) {
+    @Subscribe fun onGLInitialized(event: Initialized) {
         pushLayer(debugLayer)
-        pushOverlay(editorLayer)
-        log.debug("Initialized sandbox window: ${event.window} and added all layers.")
-    }
-
-    @Subscribe fun onPropertiesRender(event: PropertiesOverlay) {
-        ImGui.colorEdit4("clear color", color)
     }
 
     /**
@@ -75,48 +76,38 @@ object Sandbox : Application<GLRenderAPI> {
     @Subscribe fun onKeyPressed(event: KeyPress) {
         when (event.key) {
             GLFW_KEY_KP_0 -> {
-                popLayer(editorLayer)
-                popOverlay(debugLayer)
-                pushOverlay(debugLayer)
+                layers.clear()
             }
             GLFW_KEY_KP_1 -> {
-                popLayer(editorLayer)
+                popLayer(simulateLayer)
                 popOverlay(debugLayer)
-                pushLayer(editorLayer)
+                popOverlay(editorLayer)
+                pushLayer(debugLayer)
             }
             GLFW_KEY_KP_2 -> {
-                popLayer(editorLayer)
+                popLayer(simulateLayer)
                 popOverlay(debugLayer)
+                popOverlay(editorLayer)
+                pushLayer(simulateLayer)
             }
             GLFW_KEY_KP_3 -> {
-                popLayer(editorLayer)
+                popLayer(simulateLayer)
                 popOverlay(debugLayer)
-                pushLayer(editorLayer)
-                pushOverlay(debugLayer)
-            }
-            GLFW_KEY_KP_4 -> {
-                popLayer(editorLayer)
-                popOverlay(debugLayer)
-                pushOverlay(debugLayer)
-                pushLayer(editorLayer)
+                popOverlay(editorLayer)
+                pushOverlay(editorLayer)
             }
         }
     }
 
     /**
-     * This is called every frame and updates the children layers.
-     * It also polls the window and swaps the buffers
+     * Called upon the window closing, we pass on the destroy event the various APIS
      */
-    override fun onUpdate(event: App.Update) {
-        renderAPI.clear(color, COLOR)
-        super.onUpdate(event)
-    }
-
     @Subscribe
     override fun destroy(event: Window.Destroy) {
         super.destroy(event)
         debugAPI.dispose()
         renderAPI.dispose()
     }
+
 }
 

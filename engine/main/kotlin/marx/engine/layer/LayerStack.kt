@@ -2,23 +2,25 @@ package marx.engine.layer
 
 import org.slf4j.*
 
-interface LayerStack : Collection<Layer> {
-    val layers: MutableList<Layer>
+interface LayerStack : Collection<Layer<*>> {
+    val layers: MutableList<Layer<*>>
     var insertIndex: Int
     val log: Logger
 
     //Pushes layers to the front/top of the list
-    fun pushLayer(layer: Layer) {
+    fun pushLayer(layer: Layer<*>) {
         if (layers.contains(layer)) {
             log.warn("Attempted to add layer: $layer twice, make sure to pop it first!")
             return
         }
+        if (insertIndex + 1 > size)
+            insertIndex = size
         layers.add(insertIndex++, layer).also { layer.onAttach() }
             .also { log.info("pushed layer ${layer.name} to index ${layers.indexOf(layer)}") }
     }
 
     //Pushes layers to the back, as an overlay
-    fun pushOverlay(layer: Layer) {
+    fun pushOverlay(layer: Layer<*>) {
         if (layers.contains(layer)) {
             log.warn("Attempted to add overlay: $layer twice, make sure to pop it first!")
             return
@@ -33,7 +35,7 @@ interface LayerStack : Collection<Layer> {
      * This will find the layer's index and remove it,
      * then decrement the [insertIndex]
      */
-    fun popLayer(layer: Layer) {
+    fun popLayer(layer: Layer<*>) {
         val index = layers.indexOf(layer)
         if (index != layers.size && index >= 0) {
             layers.removeAt(index).onDetach()
@@ -45,7 +47,7 @@ interface LayerStack : Collection<Layer> {
     /**
      * Removes the last layer
      */
-    fun popOverlay(layer: Layer) {
+    fun popOverlay(layer: Layer<*>) {
         val index = layers.indexOf(layer)
         if (index != layers.size && index >= 0) {
             layers.removeAt(layers.indexOf(layer)).also { layer.onDetach() }
@@ -64,17 +66,17 @@ interface LayerStack : Collection<Layer> {
     /**
      * Checks if the specified element is contained in this collection.
      */
-    override fun contains(element: Layer): Boolean = layers.contains(element)
+    override fun contains(element: Layer<*>): Boolean = layers.contains(element)
 
     /**
      * Checks if all elements in the specified collection are contained in this collection.
      */
-    override fun containsAll(elements: Collection<Layer>): Boolean = layers.containsAll(elements)
+    override fun containsAll(elements: Collection<Layer<*>>): Boolean = layers.containsAll(elements)
 
     /**
      * Returns `true` if the collection is empty (contains no elements), `false` otherwise.
      */
     override fun isEmpty(): Boolean = layers.isEmpty()
 
-    override fun iterator(): Iterator<Layer> = layers.iterator()
+    override fun iterator(): Iterator<Layer<*>> = layers.iterator()
 }

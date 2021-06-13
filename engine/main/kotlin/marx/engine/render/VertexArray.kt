@@ -2,6 +2,9 @@ package marx.engine.render
 
 import marx.engine.render.Buffer.*
 import mu.*
+import java.lang.IllegalStateException
+import java.nio.*
+import kotlin.reflect.*
 
 /**
  * Represents a renderable element on screen. It can store an infinite number number of buffers
@@ -9,6 +12,7 @@ import mu.*
 abstract class VertexArray {
     protected open val buffers: MutableList<Buffer> = ArrayList()
     protected val log = KotlinLogging.logger { }
+    val size: Int get() = buffers.size
 
     /**
      * Create the vertex array. Must be done after the given renderAPI is setup.
@@ -29,6 +33,18 @@ abstract class VertexArray {
      * This is used to dispose of the vertex array after we're done with it
      */
     abstract fun dispose()
+
+    /**
+     * This should get the first given buffer class type
+     */
+    @Suppress("UNCHECKED_CAST")
+    operator fun <T : Buffer> get(type: KClass<T>): T {
+        buffers.forEach {
+            if (type.isInstance(it))
+                return it as T
+        }
+        throw IllegalStateException("Failed to find buffer of type ${type.qualifiedName}")
+    }
 
     /**
      * This will add the give buffer. It can either be a [VertexBuffer] or a [IndexBuffer]

@@ -1,4 +1,4 @@
-package marx.editor
+package marx.editor.layer
 
 import imgui.*
 import marx.editor.wrapper.*
@@ -9,24 +9,24 @@ import marx.engine.events.Events.Gui.*
 import marx.engine.layer.*
 import marx.engine.render.*
 
-class LayerImGui(app: Application<*>) : Layer(app) {
-    val guiRenderer: DebugRenderAPI = Renderer()
+class LayerImGui(app: Application<*>) : Layer<DebugRenderAPI>(app, DebugRenderAPI::class) {
+
     private val dockspaceName = "core_dockspace"
     private val viewportEvent = ViewportOverlay()
     private val propertiesEvent = PropertiesOverlay()
 
     override fun onAttach() {
-        guiRenderer.init()
+        renderAPI.init()
     }
 
-    override fun onUpdate(update: Update) = guiRenderer.frame { onRenderUi(update, ImGui.getIO()) }
+    override fun onUpdate(update: Update) = renderAPI.frame { onRenderUi(update, ImGui.getIO()) }
 
     /**
      * This is called inside the render frame of imgui. It's an overlay so it should be last.
      */
     private fun onRenderUi(update: Update, io: ImGuiIO) {
         io.deltaTime = update.deltaTime.toFloat()
-        guiRenderer.dockspace(dockspaceName, ::renderProperties, ::renderViewport)
+        renderAPI.dockspace(dockspaceName, ::renderProperties, ::renderViewport)
     }
 
     /**
@@ -40,6 +40,7 @@ class LayerImGui(app: Application<*>) : Layer(app) {
      * This should render the imgui properties windows on the sidebar
      */
     private fun renderViewport() {
+        app.publish(viewportEvent)
     }
 
     /**

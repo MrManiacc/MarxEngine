@@ -48,7 +48,7 @@ abstract class Shader {
     abstract fun updateVec3(uniform: String, vector: Vector3f)
 
     /**This should update a vec2 to the shader**/
-    abstract fun updateVec3(uniform: String, vector: Vector2f)
+    abstract fun updateVec2(uniform: String, vector: Vector2f)
 
     /**This should update a float to the shader**/
     abstract fun uploadFloat(uniform: String, float: Float)

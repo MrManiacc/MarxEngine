@@ -5,6 +5,7 @@ import marx.engine.events.Events.Shader.*
 import marx.engine.render.*
 import org.joml.*
 import org.lwjgl.opengl.GL20.*
+import java.nio.*
 
 /**
  * This is the shader implemented with opengl
@@ -13,9 +14,9 @@ class GLShader(val app: Application<*>) : Shader() {
     private var vertexShader: Int = -1
     private var fragmentShader: Int = -1
     private var shaderProgram: Int = -1
-
-    override val isValid: Boolean
-        get() = vertexShader != -1 && fragmentShader != -1 && shaderProgram != -1
+    override val isValid: Boolean get() = vertexShader != -1 && fragmentShader != -1 && shaderProgram != -1
+    private val mat4Buffer: FloatArray = FloatArray(4 * 4)
+    private val mat3Buffer: FloatArray = FloatArray(3 * 3)
 
     /***
      * This should compile the shader.
@@ -49,7 +50,6 @@ class GLShader(val app: Application<*>) : Shader() {
         app.publish(Compiled(this, programResult))
         return valid && isValid && programResult.isValid
     }
-
 
     private fun compileShader(source: String, type: Int, result: CompileResult): Int {
         val shader = glCreateShader(type)
@@ -130,26 +130,31 @@ class GLShader(val app: Application<*>) : Shader() {
 
     /**This should update a vec3 to the shader**/
     override fun updateVec3(uniform: String, vector: Vector3f) {
-        TODO("Not yet implemented")
+        val location = glGetUniformLocation(shaderProgram, uniform)
+        glUniform3f(location, vector.x, vector.y, vector.z)
     }
 
     /**This should update a vec2 to the shader**/
-    override fun updateVec3(uniform: String, vector: Vector2f) {
-        TODO("Not yet implemented")
+    override fun updateVec2(uniform: String, vector: Vector2f) {
+        val location = glGetUniformLocation(shaderProgram, uniform)
+        glUniform2f(location, vector.x, vector.y)
     }
 
     /**This should update a float to the shader**/
     override fun uploadFloat(uniform: String, float: Float) {
-        TODO("Not yet implemented")
+        val location = glGetUniformLocation(shaderProgram, uniform)
+        glUniform1f(location, float)
     }
 
     /**This should update a float to the shader**/
     override fun uploadMat4(uniform: String, matrix: Matrix4f) {
-        TODO("Not yet implemented")
+        val location = glGetUniformLocation(shaderProgram, uniform)
+        glUniformMatrix4fv(location, false, matrix.get(mat4Buffer))
     }
 
     /**This should update a float to the shader**/
     override fun uploadMat3(uniform: String, matrix: Matrix3f) {
-        TODO("Not yet implemented")
+        val location = glGetUniformLocation(shaderProgram, uniform)
+        glUniformMatrix3fv(location, false, matrix.get(mat3Buffer))
     }
 }

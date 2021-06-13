@@ -13,11 +13,10 @@ import marx.engine.render.*
 import marx.opengl.*
 import marx.opengl.GLBuffer.GLIndexBuffer
 import marx.opengl.GLBuffer.GLVertexBuffer
+import marx.sandbox.*
 import mu.*
+import org.joml.*
 import org.lwjgl.glfw.GLFW.*
-import org.lwjgl.opengl.*
-import org.lwjgl.opengl.GL30.*
-import org.lwjgl.system.MemoryUtil.*
 import org.slf4j.*
 import kotlin.math.*
 import kotlin.time.*
@@ -25,51 +24,92 @@ import kotlin.time.*
 /**
  * This layer is used for debugging purposes
  */
-class LayerDebug(app: Application<*>) : Layer(app, "debug-layer") {
-    private val wrapper = DebugRenderAPI(app.window)
-
+class LayerDebug(app: Application<*>) : Layer<DebugRenderAPI>(app, DebugRenderAPI::class, "debug-layer") {
     private val log: Logger = KotlinLogging.logger { }
-    private var vao: Int = 0
-    private val shader = GLShader(app)
-    private val quad: Pair<FloatArray, IntArray> =
-        floatArrayOf(
-            0.5f, 0.5f, 0.0f,  // top right
-            0.5f, -0.5f, 0.0f,  // bottom right
-            -0.5f, -0.5f, 0.0f,  // bottom left
-            -0.5f, 0.5f, 0.0f   // top left
-        ) to intArrayOf(
-            0, 1, 3,   // first triangle
-            1, 2, 3    // second triangle
+    private val simpleShader = GLShader(app)
+    private val editorShader = GLShader(app)
+
+    /**This creates a quad of size 0.5**/
+    val quadVAO: VertexArray = GLVertexArray().apply {
+        this += GLVertexBuffer(
+            floatArrayOf(
+                0.5f, 0.5f, 0.0f,  // top right
+                0.5f, -0.5f, 0.0f,  // bottom right
+                -0.5f, -0.5f, 0.0f,  // bottom left
+                -0.5f, 0.5f, 0.0f // top left
+            ), 3
         )
-    val vertexBuffer: GLVertexBuffer = Buffer(quad.first, 3)
-    val indexBuffer: GLIndexBuffer = Buffer(quad.second)
 
-    /****/
-    val vertexArray: VertexArray = GLVertexArray().apply {
-        this += vertexBuffer
-        this += indexBuffer
+        this += GLIndexBuffer(
+            intArrayOf(
+                0, 1, 3,   // first triangle
+                1, 2, 3    // second triangle
+            )
+        )
     }
 
+    /**This creates a quad of size 0.5**/
+    val triangleVAO: VertexArray = GLVertexArray().apply {
+        this += GLVertexBuffer(
+            floatArrayOf(
+                -0.33f, -0.5f, 0.0f,  // bottom left
+                0.0f, 0.33f, 0.0f, // top left
+                0.33f, -0.5f, 0.0f,  // bottom right
+            ), 3
+        )
+
+        this += GLIndexBuffer(
+            intArrayOf(
+                0, 1, 2,   // first triangle
+            )
+        )
+    }
+
+    /**
+     * This is called upon the layer being presented.
+     */
     override fun onAttach() {
-        vertexArray.create()
-        wrapper.init()
-        if (shader.compile(Shaders.simple)) log.warn("Successfully compiled shader: ${shader::class.qualifiedName}")
+        renderAPI.init()
+        quadVAO.create()
+        triangleVAO.create()
+        if (simpleShader.compile(Shaders.simple)) log.warn("Successfully compiled simple shader: ${simpleShader::class.qualifiedName}")
+        if (editorShader.compile(Shaders.colored(version = "330", core = true, color = Vector3f(0.8f, 0.232f, 0.323f)))) log.warn(
+            "Successfully compiled editor shader: ${editorShader::class.qualifiedName}"
+        )
     }
 
+    /**
+     * This will draw every frame
+     */
     override fun onUpdate(update: Update) {
-        shader.bind()
-        vertexArray.bind()
-        GL11.glDrawElements(GL_TRIANGLES, quad.second.size, GL_UNSIGNED_INT, NULL)
-        vertexArray.unbind()
-        shader.unbind()
-        wrapper.frame { onImGui(update) }
+        if (app.input.isKeyDown(GLFW_KEY_LEFT))
+            Sandbox.editorCamera.move(floatArrayOf(0.5f * update.deltaTime.toFloat(), 0f))
+        if (app.input.isKeyDown(GLFW_KEY_RIGHT))
+            Sandbox.editorCamera.move(floatArrayOf(-0.5f * update.deltaTime.toFloat(), 0f))
+        if (app.input.isKeyDown(GLFW_KEY_DOWN))
+            Sandbox.editorCamera.move(floatArrayOf(0f, 0.5f * update.deltaTime.toFloat()))
+        if (app.input.isKeyDown(GLFW_KEY_UP))
+            Sandbox.editorCamera.move(floatArrayOf(0f, -0.5f * update.deltaTime.toFloat()))
+
+        drawScene()
+        renderAPI.frame { drawGui(update) }
+    }
+
+    /**
+     * Draws our test scene
+     */
+    private fun drawScene() {
+        scene.sceneOf(Sandbox.editorCamera) {
+            submit(quadVAO, simpleShader)
+            submit(triangleVAO, editorShader)
+        }
     }
 
     /**
      * This is called inside the render frame of imgui. It's an overlay so it should be last.
      */
     @OptIn(ExperimentalTime::class)
-    private fun onImGui(update: Update) {
+    private fun drawGui(update: Update) {
         val pos = app.window.pos
         val size = app.window.size
         val width = 140f
@@ -85,6 +125,7 @@ class LayerDebug(app: Application<*>) : Layer(app, "debug-layer") {
             ImGui.text("fps: ${ImGui.getIO().framerate.roundToInt()}")
         }
         ImGui.end()
+
     }
 
     override fun onEvent(event: Event) {
@@ -95,16 +136,17 @@ class LayerDebug(app: Application<*>) : Layer(app, "debug-layer") {
                 log.error("Failed to compile '${event.result.type.name}' shader: ${event.result.message}")
         else if (event is KeyPress) {
             if (event.key == GLFW_KEY_R) { //Reload the shader
-                shader.destroy()
-                shader.compile(Shaders.simple)
-                log.info("Reloaded shader: $shader")
+                editorShader.destroy()
+                editorShader.compile(Shaders.simple)
+                log.info("Reloaded shader: $editorShader")
             }
         }
     }
 
     override fun onDetach() {
-        shader.destroy()
-        vertexArray.dispose()
+        editorShader.destroy()
+        quadVAO.dispose()
+        triangleVAO.dispose()
     }
 
 
