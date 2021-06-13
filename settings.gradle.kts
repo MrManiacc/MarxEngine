@@ -10,8 +10,7 @@ pluginManagement {
 rootDir.walk().forEach {
     if (it.list { _, name -> name.endsWith(".toml") }?.isNotEmpty() == true) {
         val root = rootDir.path
-        val name = it.path.replace(root, "").replace("\\", ":")
-        include(name)
+        include(it.path.replace(root, "").replace("\\", ":").replace("/", ":"))
     }
 }
 

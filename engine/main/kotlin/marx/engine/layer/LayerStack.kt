@@ -1,35 +1,59 @@
 package marx.engine.layer
 
-import com.google.common.collect.*
-import marx.engine.events.*
+import org.slf4j.*
 
 interface LayerStack : Collection<Layer> {
     val layers: MutableList<Layer>
     var insertIndex: Int
+    val log: Logger
 
     //Pushes layers to the front/top of the list
-    fun pushLayer(layer: Layer) = layers.add(insertIndex++, layer).also { layer.onAttach() }
+    fun pushLayer(layer: Layer) {
+        if (layers.contains(layer)) {
+            log.warn("Attempted to add layer: $layer twice, make sure to pop it first!")
+            return
+        }
+        layers.add(insertIndex++, layer).also { layer.onAttach() }
+            .also { log.info("pushed layer ${layer.name} to index ${layers.indexOf(layer)}") }
+    }
 
     //Pushes layers to the back, as an overlay
-    fun pushOverlay(layer: Layer) = layers.add(layers.size - 1, layer).also { layer.onAttach() }
+    fun pushOverlay(layer: Layer) {
+        if (layers.contains(layer)) {
+            log.warn("Attempted to add overlay: $layer twice, make sure to pop it first!")
+            return
+        }
+        val index = if (layers.isEmpty()) 0 else layers.size - 1
+
+        layers.add(index, layer).also { layer.onAttach() }
+            .also { log.info("pushed overlay layer ${layer.name} to index ${layers.indexOf(layer)}") }
+    }
 
     /**
      * This will find the layer's index and remove it,
      * then decrement the [insertIndex]
      */
     fun popLayer(layer: Layer) {
-        val idx = layers.indexOf(layer)
-        if (idx != layers.size) {
-            layers.removeAt(idx)
+        val index = layers.indexOf(layer)
+        if (index != layers.size && index >= 0) {
+            layers.removeAt(index).onDetach()
+            log.info("popped layer ${layer.name} from index $index")
             insertIndex--
-            layer.onDetach()
         }
     }
 
     /**
      * Removes the last layer
      */
-    fun popOverlay(layer: Layer) = layers.removeAt(layers.size - 1).also { layer.onDetach() }
+    fun popOverlay(layer: Layer) {
+        val index = layers.indexOf(layer)
+        if (index != layers.size && index >= 0) {
+            layers.removeAt(layers.indexOf(layer)).also { layer.onDetach() }
+                .also {
+                    log.info("popped overlay layer ${layer.name} from index ${layers.size}")
+                }
+        }
+    }
 
     /**
      * Returns the size of the collection.

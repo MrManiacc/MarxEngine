@@ -5,14 +5,18 @@ import dorkbox.messageBus.annotations.*
 import marx.engine.events.*
 import marx.engine.events.Events.App.Initialized
 import marx.engine.events.Events.App.Update
+import marx.engine.events.Events.Window
+import marx.engine.events.Events.Window.Resize
 import marx.engine.input.*
 import marx.engine.layer.*
+import marx.engine.render.*
 import marx.engine.window.*
+import kotlin.reflect.*
 
 /**
  * This is the main entry for the marx engine. It
  */
-interface Application : IBus, LayerStack {
+interface Application<API : Renderer.RenderAPI> : IBus, LayerStack {
     val eventbus: MessageBus
     val window: IWindow
     val input: IInput
@@ -21,37 +25,48 @@ interface Application : IBus, LayerStack {
     var startTime: Long
     val currentTime: Long get() = System.currentTimeMillis()
 
-    override fun subscribe(listener: Any) {
-        eventbus.subscribe(listener)
-    }
+    /**This will get the render api for the specified [rendererType]**/
+    val renderAPI: API
+
+    override fun subscribe(listener: Any) = eventbus.subscribe(listener)
 
     override fun <T : IEvent> publish(event: T) {
+        if (event is Event)
+            for (layerId in size - 1 downTo 0) {
+                val layer = layers[layerId]
+                layer.onEvent(event)
+                if (event.isHandled) return
+            }
         eventbus.publish(event)
     }
 
     override fun <T : IEvent> publishAsync(event: T) {
+        if (event is Event)
+            for (layerId in size - 1 downTo 0) {
+                val layer = layers[layerId]
+                layer.onEvent(event)
+                if (event.isHandled) return
+            }
         eventbus.publishAsync(event)
-    }
-
-    override fun shutdown() {
-        eventbus.shutdown()
-    }
-
-    @Subscribe
-    fun handleEvents(event: Event) {
-        val itr = layers.listIterator()
-        // `hasPrevious()` returns true if the list has a previous element
-        while (itr.hasPrevious()) {
-            val layer = itr.previous()
-            layer.onEvent(event)
-            if (event.isHandled) break
-        }
     }
 
     /**
      * Called upon updating of the game
      */
-    fun onUpdate(event: Update) = forEach { it.onUpdate(event) }
+    fun onUpdate(event: Update) {
+        for (layerId in size - 1 downTo 0) {
+            val layer = layers[layerId]
+            layer.onUpdate(event)
+        }
+
+        renderAPI.swap()
+        renderAPI.poll()
+    }
+
+    @Subscribe
+    fun onResize(event: Resize) {
+        renderAPI.viewport(event.width to event.height)
+    }
 
     /**
      * This is called upon the start of the application
@@ -63,6 +78,7 @@ interface Application : IBus, LayerStack {
         isRunning = true
         publish(Initialized(this))
         startTime = currentTime
+        renderAPI.init()
         while (isRunning && !window.shouldClose) {
             val now = currentTime
             val delta = (now - startTime) / 1000.0
@@ -81,13 +97,22 @@ interface Application : IBus, LayerStack {
         isRunning = false
     }
 
+    @Subscribe
+    fun destroy(event: Window.Destroy) {
+        renderAPI.dispose()
+    }
+
+    override fun shutdown() {
+        eventbus.shutdown()
+    }
+
     companion object {
         private val updateEvent: Events.App.Update = Events.App.Update(0.1, 1.0)
-        lateinit var instance: Application
+        lateinit var instance: Application<*>
 
         fun updateOf(gameTime: Double, delta: Double): Events.App.Update {
             updateEvent.gameTime = gameTime
-            updateEvent.delta = delta
+            updateEvent.deltaTime = delta
             return updateEvent
         }
     }

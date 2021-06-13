@@ -21,6 +21,7 @@ bus = "com.dorkbox:MessageBus:$message_bus_version"
 guava = "com.google.guava:guava:$guava_version"
 imgui = "io.github.spair:imgui-java-binding:$imgui_version,io.github.spair:imgui-java-lwjgl3:$imgui_version"
 imgui_native = "io.github.spair:imgui-java-$natives-ft:$imgui_version"
+reflect = "org.jetbrains.kotlin:kotlin-reflect:1.4.32"
 repos = "https://nexus.devsrsouza.com.br/repository/maven-public/"
 
 #The root build structure for the module.
@@ -47,11 +48,12 @@ implements = [
     "$guava",
     "$bus",
     "$logger",
-    "$imgui"
+    "$imgui",
+    "$reflect"
 ]
 
 #The depencies that are to be sent to the runtime configuration. Useful for c++ binaries
 runtimes = [
     "$lwjgl_native",
-    "$imgui_native"
+    "$imgui_native",
 ]

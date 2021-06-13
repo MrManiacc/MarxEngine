@@ -1,5 +1,7 @@
 package marx.engine.window
 
+import marx.engine.render.*
+
 interface IWindow {
     val title: String
     val width: Int
@@ -10,4 +12,7 @@ interface IWindow {
     fun swapBuffers()
     fun pollInput()
     var handle: Long
+
+    val size: Pair<Int, Int>
+    val pos: Pair<Int, Int>
 }

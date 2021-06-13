@@ -1,30 +1,30 @@
 package marx.editor.wrapper
 
 import imgui.*
+import imgui.extension.imguizmo.*
 import imgui.extension.nodeditor.*
 import imgui.flag.*
 import imgui.gl3.*
 import imgui.glfw.*
 import imgui.type.*
+import marx.engine.render.*
 import marx.engine.utils.*
 import marx.engine.window.*
+import marx.opengl.*
 import org.lwjgl.glfw.*
+import java.lang.IllegalStateException
 import imgui.internal.ImGui as ImGuiInternal
 import imgui.internal.flag.ImGuiDockNodeFlags as ImGuiDockNodeInternalFlags
 
 /**
  * This is kind of a wrapper around imgui for ease of use with kotlin.
  */
-class ImGuiWrapper(val window: IWindow) {
-
+class DebugRenderAPI(window: IWindow) : GLRenderAPI(window) {
     /**The constant dockspace id for the main dockspace.**/
     private val dockspaceId = "main_dockspace"
 
     /**Dynamically gets the window long reference.**/
     private val handle: Long get() = window.handle
-
-    /**We only need to initialize once**/
-    private var initialized = false
 
     /**This stores the glfw backend implementation for imgui**/
     private val imGuiGlfw = ImGuiImplGlfw()
@@ -38,16 +38,20 @@ class ImGuiWrapper(val window: IWindow) {
     /**Used for getting the content region**/
     private val maxBuffer = ImVec2()
 
+    private lateinit var nodeEditor: NodeEditorContext
+    private var init = false
+
     /**
      * This will initialize the gui
      */
 
-    fun init() {
-        if (!initialized) {
+    override fun init() {
+        if (!init) {
             initImGui()
             imGuiGlfw.init(handle, true);
+            nodeEditor = NodeEditor.createEditor() ?: throw IllegalStateException("Failed to create node editor context")
             imGuiGl3.init("#version 120"); //Use version of #330 for mac support (minium required version otherwise exception on mac)
-            initialized = true
+            init = true
         }
     }
 
@@ -228,8 +232,11 @@ class ImGuiWrapper(val window: IWindow) {
         ImGuiInternal.dockBuilderFinish(dockspaceID)
     }
 
-    fun close(){
+    /**Called upon unloading of the given renderAPI **/
+    override fun dispose() {
         ImGui.destroyContext()
+        imGuiGlfw.dispose()
+        imGuiGl3.dispose()
+        init = false
     }
-
 }

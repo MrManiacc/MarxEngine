@@ -2,7 +2,10 @@ package marx.engine.events
 
 import imgui.*
 import marx.engine.*
+import marx.engine.render.*
+import marx.engine.render.Shader.*
 import marx.engine.window.*
+import marx.engine.render.Shader as RenderShader
 
 /**
  * This stores all of our engine level abstract events.
@@ -12,9 +15,16 @@ object Events {
     /**
      * Used for imgui related events
      */
+    class Shader {
+        data class Compiled(val shader: RenderShader, val result: CompileResult) : Event()
+    }
+
+    /**
+     * Used for imgui related events
+     */
     class Gui {
         class ViewportOverlay : Event()
-
+        class PropertiesOverlay : Event()
     }
 
     /**
@@ -32,13 +42,11 @@ object Events {
      * This stores all of our app lifecycle events
      */
     object App {
-        data class Initialized(val app: Application) : Event()
+        data class Initialized(val app: Application<*>) : Event()
 
-        data class Update(var delta: Double, var gameTime: Double) : Event()
+        data class Update(var deltaTime: Double, var gameTime: Double) : Event()
 
-        data class AppRenderEvent(val time: Long, val dt: Float) : Event()
-
-        data class Shutdown(val app: Application) : Event()
+        data class Shutdown(val app: Application<*>) : Event()
     }
 
     object Input {

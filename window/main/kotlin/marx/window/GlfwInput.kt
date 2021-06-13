@@ -4,28 +4,35 @@ import dorkbox.messageBus.annotations.*
 import marx.engine.events.*
 import marx.engine.events.Events.Input.KeyEvent
 import marx.engine.input.*
+import marx.engine.window.*
+import org.lwjgl.glfw.GLFW.*
 
-class GlfwInput : IInput {
-    private val keys: IntArray = IntArray(1024)
-    private val mods: IntArray = IntArray(1024)
+class GlfwInput(override val window: IWindow) : IInput {
+    private val xBuffer = DoubleArray(1)
+    private val yBuffer = DoubleArray(1)
 
-    /**
-     * Allows us to have the key's tracked
-     */
-    @Subscribe fun onKeyEvent(event: KeyEvent) {
-        keys[event.key] = event.action
-        mods[event.key] = event.mods
+    override val mouseX: Float
+        get() {
+            val state = glfwGetCursorPos(window.handle, xBuffer, yBuffer)
+            return xBuffer[0].toFloat()
+        }
+
+    override val mouseY: Float
+        get() {
+            val state = glfwGetCursorPos(window.handle, xBuffer, yBuffer)
+            return yBuffer[0].toFloat()
+        }
+
+    override fun isKeyDown(keyCode: Int): Boolean {
+        val state = glfwGetKey(window.handle, keyCode)
+        return state == GLFW_PRESS || state == GLFW_REPEAT
     }
 
-    override fun isKeyReleased(keyCode: Int): Boolean {
-        return keys[keyCode] == 0
+    override fun isMouseDown(mouseButton: Int): Boolean {
+        val state = glfwGetMouseButton(window.handle, mouseButton)
+        return state == GLFW_PRESS || state == GLFW_REPEAT
     }
 
-    override fun isKeyPressed(keyCode: Int): Boolean {
-        return keys[keyCode] == 1
-    }
 
-    override fun isKeyRepeated(keyCode: Int): Boolean {
-        return keys[keyCode] == 2
-    }
+
 }
