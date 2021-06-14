@@ -14,7 +14,7 @@ import marx.engine.render.scene.*
 import marx.engine.window.*
 import kotlin.reflect.*
 
-/**
+/*
  * This is the main entry for the marx engine. It
  */
 interface Application<API : RenderAPI> : IBus, LayerStack {
@@ -26,10 +26,10 @@ interface Application<API : RenderAPI> : IBus, LayerStack {
     var startTime: Long
     val currentTime: Long get() = System.nanoTime()
 
-    /**This will get the render api for the specified [rendererType]**/
+    /*This will get the render api for the specified [rendererType]**/
     val renderAPI: API
 
-    /**This is the root scene for the application**/
+    /*This is the root scene for the application**/
     val scene: RenderScene
 
     override fun subscribe(listener: Any) = eventbus.subscribe(listener)
@@ -54,8 +54,8 @@ interface Application<API : RenderAPI> : IBus, LayerStack {
         eventbus.publishAsync(event)
     }
 
-    /**
-     * Called upon updating of the game
+    /*
+   NumberCalled upon updating of the game
      */
     fun onUpdate(event: Timestep) {
         for (layerId in size - 1 downTo 0) {
@@ -70,8 +70,8 @@ interface Application<API : RenderAPI> : IBus, LayerStack {
     fun onResize(event: Resize) =
         renderAPI.command.viewport(event.width to event.height, 0 to 0)
 
-    /**
-     * This is called upon the start of the application
+    /*
+   NumberThis is called upon the start of the application
      */
     fun start() {
         instance = this
@@ -85,8 +85,8 @@ interface Application<API : RenderAPI> : IBus, LayerStack {
         destroy()
     }
 
-    /**
-     * This is the main update loop.
+    /*
+   NumberThis is the main update loop.
      */
     fun update() {
         while (isRunning && !window.shouldClose) {

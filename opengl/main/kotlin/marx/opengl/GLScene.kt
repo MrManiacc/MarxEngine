@@ -7,7 +7,7 @@ import marx.engine.render.camera.*
 import marx.engine.render.scene.*
 import kotlin.reflect.*
 
-/**
+/*
  * This controls an editor's scene.
  */
 class GLScene<API : RenderAPI>(
@@ -18,16 +18,16 @@ class GLScene<API : RenderAPI>(
     private var shader: Shader? = null
     private val drawCalls: MutableList<() -> VertexArray> = Lists.newArrayList()
 
-    /**
-     * This will start a new scene
+    /*
+   NumberThis will start a new scene
      */
     override fun beginScene(camera: Camera<*>) {
         this.camera = camera
         drawCalls.clear()
     }
 
-    /**
-     * This method should be overloaded for all of the various types of things we can submit
+    /*
+   NumberThis method should be overloaded for all of the various types of things we can submit
      */
     override fun submit(array: VertexArray) {
         drawCalls.add {
@@ -38,8 +38,8 @@ class GLScene<API : RenderAPI>(
         }
     }
 
-    /**
-     * This method should be overloaded for all of the various types of things we can submit
+    /*
+   NumberThis method should be overloaded for all of the various types of things we can submit
      */
     override fun submit(array: VertexArray, shader: Shader, transform: Transform) {
         drawCalls.add {
@@ -54,8 +54,8 @@ class GLScene<API : RenderAPI>(
         }
     }
 
-    /**
-     * This clears our all of objects or entities on the scene
+    /*
+   NumberThis clears our all of objects or entities on the scene
      */
     override fun flush() {
         shader = null
@@ -63,8 +63,8 @@ class GLScene<API : RenderAPI>(
         drawCalls.clear()
     }
 
-    /**
-     * Ends the current scene, renders all of the submitted meshes
+    /*
+   NumberEnds the current scene, renders all of the submitted meshes
      */
     override fun endScene() {
         drawCalls.forEach { it() }

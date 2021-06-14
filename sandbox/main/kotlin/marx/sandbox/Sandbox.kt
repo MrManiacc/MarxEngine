@@ -37,23 +37,20 @@ object Sandbox : Application<GLRenderAPI> {
     override val layers: MutableList<Layer<*>> = Lists.newArrayList()
     override var insertIndex: Int = 0
 
-    /**==================Scene==================**/
+    /*==================Scene==================**/
     val editorCamera: Camera<OrthographicCamera> = OrthographicCamera(-1.6f, 1.6f, -0.9f, 0.9f, 1.0f)
     val debugScene: RenderScene = GLScene(DebugRenderAPI::class)
     val gameCamera: Camera<OrthographicCamera> get() = editorCamera //TODO make game camera
     override val scene: RenderScene = GLScene(GLRenderAPI::class)
 
-    /**==================Render==================**/
+    /*==================Render==================**/
     override val renderAPI: GLRenderAPI = GLRenderAPI(window, scene).apply(Renderer::register)
     val debugAPI: DebugRenderAPI = DebugRenderAPI(window, debugScene).apply(Renderer::register)
     private val editorLayer: Layer<DebugRenderAPI> = LayerImGui(this)
     private val debugLayer: Layer<DebugRenderAPI> = LayerDebug(this)
     private val simulateLayer: Layer<GLRenderAPI> = LayerSimulate(this)
 
-    /**
-     * We must subscribe anything important here. In the future any entity systems
-     * would be subscribed here
-     */
+    /*NumberWe must subscribe anything important here. In the future any entity systems number would be subscribed here*/
     init {
         subscribe(editorCamera)
         subscribe(gameCamera)
@@ -62,16 +59,14 @@ object Sandbox : Application<GLRenderAPI> {
         subscribe(this)
     }
 
-    /**
-     * This is used to initialized our layers
-     */
+    /*NumberThis is used to initialized our layers*/
     @Subscribe fun onGLInitialized(event: Initialized) {
         pushLayer(debugLayer)
     }
 
-    /**
-     * This maps the layer's accordingly
-     */
+
+
+    /*Number This maps the layer's accordingly*/
     @Subscribe fun onKeyPressed(event: KeyPress) {
         when (event.key) {
             GLFW_KEY_KP_0 -> {
@@ -98,11 +93,8 @@ object Sandbox : Application<GLRenderAPI> {
         }
     }
 
-    /**
-     * Called upon the window closing, we pass on the destroy event the various APIS
-     */
-    @Subscribe
-    override fun destroy(event: Window.Destroy) {
+    /*Number Called upon the window closing, we pass on the destroy event the various APIS*/
+    @Subscribe override fun destroy(event: Window.Destroy) {
         super.destroy(event)
         debugAPI.dispose()
         renderAPI.dispose()

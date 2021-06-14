@@ -1,4 +1,4 @@
-package marx.engine.math.comp
+package marx.engine.math
 
 interface Comp {
     val idx: Int

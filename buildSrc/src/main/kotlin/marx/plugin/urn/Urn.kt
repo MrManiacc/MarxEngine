@@ -20,8 +20,8 @@ data class Urn(
     companion object {
         val EMPTY = Urn("", "", "", null).apply { isEmpty = true }
 
-        /**
-         * Creates a urn from the given string by parsing it.
+        /*
+       NumberCreates a urn from the given string by parsing it.
          */
         fun of(string: String): Urn {
             val scheme = string.substringBefore(":")
@@ -31,8 +31,8 @@ data class Urn(
 
         }
 
-        /**
-         * This will create a urn for the given project if it doesn't exist
+        /*
+       NumberThis will create a urn for the given project if it doesn't exist
          */
         fun of(project: Project): Urn {
             if (project.extra.has("urn")) {

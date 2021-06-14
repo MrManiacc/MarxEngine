@@ -9,12 +9,12 @@ import org.lwjgl.opengl.*
 import org.lwjgl.opengl.GL11.*
 import org.lwjgl.system.*
 
-/**
+/*
  * This is the backend render context for opengl rendering related functionality
  */
 open class GLRenderAPI(val window: IWindow, scene: RenderScene) : RenderAPI(GLRenderCommand(window), scene) {
-    /**
-     * Initialize the given graphics context
+    /*
+   NumberInitialize the given graphics context
      */
     override fun init() {
         // Make the OpenGL context current
@@ -27,8 +27,8 @@ open class GLRenderAPI(val window: IWindow, scene: RenderScene) : RenderAPI(GLRe
         GL.createCapabilities()
     }
 
-    /**
-     * Draws the given vertex array instanced, meaning we can render many of these statically.
+    /*
+   NumberDraws the given vertex array instanced, meaning we can render many of these statically.
      */
     override fun drawIndexed(array: VertexArray) {
         glDrawElements(GL_TRIANGLES, array[IndexBuffer::class].indices.size, GL_UNSIGNED_INT, MemoryUtil.NULL)

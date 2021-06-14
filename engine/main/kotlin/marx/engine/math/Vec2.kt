@@ -1,67 +1,54 @@
-package marx.engine.math.vectors
+package marx.engine.math
 
-import marx.engine.math.comp.*
-import marx.engine.math.comp.Comp.*
-import marx.engine.math.comp.comps.*
-import marx.engine.math.comp.comps.Position.*
+import marx.engine.math.components.*
+import marx.engine.math.Comp.*
+
+import marx.engine.math.components.Position.*
 import org.joml.*
 import java.nio.*
 import java.text.*
 
-/**
+/*
  * This is our implementation of a vector4f. Its based upon joml's implementation
  */
 class Vec2 : Vector2f, IVec<Vec2> {
     constructor() : super()
-
     constructor(d: Number) : super(d.toFloat())
+    constructor(v: Vector2fc) : super(v)
+    constructor(v: Vector2ic) : super(v)
+    constructor(xy: FloatArray) : super(xy)
     constructor(
         x: Number,
         y: Number
     ) : super(x.toFloat(), y.toFloat())
-
-    constructor(v: Vector2fc) : super(v)
-    constructor(v: Vector2ic) : super(v)
-    constructor(xy: FloatArray) : super(xy)
     constructor(buffer: ByteBuffer) : super(buffer)
     constructor(
         index: Int,
         buffer: ByteBuffer
     ) : super(index, buffer)
-
     constructor(buffer: FloatBuffer) : super(buffer)
     constructor(
         index: Int,
         buffer: FloatBuffer
     ) : super(index, buffer)
 
-    /**
-     * This should divide add vector [V] from this vector [SELF]
-     */
+    /*NumberThis should divide add vector [V] from this vector [SELF]*/
     override fun <V : IVec<*>> plus(other: V): Vec2 =
         Vec2(this.x + other[X, 0f], this.y + other[Y, 0f])
 
-    /**
-     * This should divide subtract vector [V] from this vector [SELF]
-     */
+    /*NumberThis should divide subtract vector [V] from this vector [SELF]*/
     override fun <V : IVec<*>> minus(other: V): Vec2 =
         Vec2(this.x - other[X, 0f], this.y - other[Y, 0f])
 
-    /**
-     * This should divide this vector [SELF] by the other vector [V]
-     */
+    /*NumberThis should divide this vector [SELF] by the other vector [V]*/
     override fun <V : IVec<*>> div(other: V): Vec2 =
         Vec2(this.x / other[X, 1f], this.y / other[Y, 1f])
 
-    /**
-     * This should multiple this vector [SELF] by the other vector [V]
-     */
+    /*should multiple this vector [SELF] by the other vector [V]*/
     override fun <V : IVec<*>> times(other: V): Vec2 =
         Vec2(this.x * other[X, 1f], this.y * other[Y, 1f])
 
-    /**
-     * This should set the float at the given index
-     */
+    /*NumberThis should set the float at the given index*/
     override operator fun set(
         component: Comp,
         value: Float
@@ -72,9 +59,7 @@ class Vec2 : Vector2f, IVec<Vec2> {
         }
     }
 
-    /**
-     * This should get the
-     */
+    /*Number This should get the component*/
     override operator fun get(component: Comp): Float? =
         when (component.idx) {
             0 -> x

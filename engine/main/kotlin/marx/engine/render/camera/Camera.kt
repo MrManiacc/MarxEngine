@@ -1,13 +1,11 @@
 package marx.engine.render.camera
 
-import dorkbox.messageBus.annotations.*
-import marx.engine.events.*
-import marx.engine.events.Events.Window.Resize
 import marx.engine.math.*
-import marx.engine.math.comp.*
-import marx.engine.math.comp.comps.*
-import marx.engine.math.comp.comps.Position.*
-import marx.engine.math.vectors.*
+import marx.engine.math.MathDSL.Conversions.scale
+import marx.engine.math.components.*
+
+import marx.engine.math.components.Position.*
+
 import org.joml.*
 
 /**
@@ -15,60 +13,52 @@ import org.joml.*
  */
 abstract class Camera<C>(
     val position: Vec3 = Vec3(),
-    val rotation: Quaternionf = Quaternionf()
+    val rotation: Vec3 = Vec3(),
+    var moveSpeed: Float = 1f,
+    var lookSpeed: Float = 100f
 ) : IVec<Camera<C>> {
     abstract var projectionMatrix: Matrix4f
         protected set
 
-    /**Used as a buffer for the view matrix**/
+    /*Used as a buffer for the view matrix**/
     protected
     val viewBuffer: Matrix4f = Matrix4f()
 
-    /**Used as a buffer**/
+    /*Used as a buffer**/
     protected val viewProBuffer: Matrix4f = Matrix4f()
 
-    /**The player's view matrix**/
+    /*The player's view matrix**/
     abstract val viewMatrix: Matrix4f
 
-    /**This is what is going to be used for rendering**/
+    /*This is what is going to be used for rendering**/
     val viewProjection: Matrix4f get() = projectionMatrix.mul(viewMatrix, viewProBuffer)
 
-
-    /**
-     * This should divide add vector [OTHER] from this vector [SELF]
-     */
+    /* should divide add vector [OTHER] from this vector [SELF]*/
     override fun <OTHER : IVec<*>> plus(other: OTHER): Camera<C> {
         position.add(other[X, 0f], other[Y, 0f], other[Z, 0f])
         return this
     }
 
-    /**
-     * This should divide subtract vector [OTHER] from this vector [SELF]
-     */
+    /*This should divide subtract vector [OTHER] from this vector [SELF]*/
     override fun <OTHER : IVec<*>> minus(other: OTHER): Camera<C> {
         position.add(-other[X, 0f], -other[Y, 0f], -other[Z, 0f])
         return this
     }
 
-    /**
-     * This should divide this vector [SELF] by the other vector [OTHER]
-     */
+    /*This should divide this vector [SELF] by the other vector [OTHER]*/
+
     override fun <OTHER : IVec<*>> div(other: OTHER): Camera<C> {
         position.div(other[X, 1f], other[Y, 1f], other[Z, 1f])
         return this
     }
 
-    /**
-     * This should multiple this vector [SELF] by the other vector [OTHER]
-     */
+    /*This should multiple this vector [SELF] by the other vector [OTHER]*/
     override fun <OTHER : IVec<*>> times(other: OTHER): Camera<C> {
         position.mul(other[X, 1f], other[Y, 1f], other[Z, 1f])
         return this
     }
 
-    /**
-     * This should set the float at the given index
-     */
+    /*This should set the float at the given index*/
     override fun set(
         component: Comp,
         value: Float
@@ -83,9 +73,7 @@ abstract class Camera<C>(
         }
     }
 
-    /**
-     * This should get the
-     */
+    /*This should get the component*/
     override fun get(component: Comp): Float? =
         when (component) {
             X -> this.position.x
@@ -117,18 +105,52 @@ abstract class Camera<C>(
         return this
     }
 
-    infix fun offX(other: Number): Camera<C> {
+    infix fun x(other: Number): Camera<C> {
         this.position.x += other.toFloat()
         return this
     }
 
-    infix fun offY(other: Number): Camera<C> {
+    infix fun y(other: Number): Camera<C> {
         this.position.y += other.toFloat()
         return this
     }
 
-    infix fun offZ(other: Number): Camera<C> {
+    infix fun z(other: Number): Camera<C> {
         this.position.z += other.toFloat()
         return this
     }
+
+    infix fun setPitch(other: Number): Camera<C> {
+        this.rotation.x = other.toFloat()
+        return this
+    }
+
+    infix fun setYaw(other: Number): Camera<C> {
+        this.rotation.y = other.toFloat()
+        return this
+    }
+
+    infix fun setRoll(other: Number): Camera<C> {
+        this.rotation.z = other.toFloat()
+        return this
+    }
+
+    infix fun pitch(other: Number): Camera<C> {
+        this.rotation.x += other.toFloat()
+        return this
+    }
+
+    infix fun yaw(other: Number): Camera<C> {
+        this.rotation.y += other.toFloat()
+        return this
+    }
+
+    infix fun roll(other: Number): Camera<C> {
+        this.rotation.z += other.toFloat()
+        return this
+    }
+
+    override fun toString(): String =
+        "Camera(position=$position, scale=$scale, rotation=$rotation)"
+
 }

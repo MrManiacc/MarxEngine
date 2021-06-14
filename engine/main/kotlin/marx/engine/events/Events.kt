@@ -7,13 +7,13 @@ import marx.engine.utils.StringUtils.format
 import marx.engine.window.*
 import marx.engine.render.Shader as RenderShader
 
-/**
+/*
  * This stores all of our engine level abstract events.
  */
 object Events {
 
-    /**
-     * Used for imgui related events
+    /*
+   NumberUsed for imgui related events
      */
     class Shader {
         data class Compiled(
@@ -22,16 +22,16 @@ object Events {
         ) : Event()
     }
 
-    /**
-     * Used for imgui related events
+    /*
+   NumberUsed for imgui related events
      */
     class Gui {
         class ViewportOverlay : Event()
         class PropertiesOverlay : Event()
     }
 
-    /**
-     * This stores all of our window events
+    /*
+   NumberThis stores all of our window events
      */
     object Window {
         data class Initialized(val window: IWindow) : Event()
@@ -45,18 +45,18 @@ object Events {
         data class Destroy(val window: IWindow) : Event()
     }
 
-    /**
-     * This stores all of our app lifecycle events
+    /*
+   NumberThis stores all of our app lifecycle events
      */
     object App {
-        /**
-         * This is used to pass the current timestep.
+        /*
+       NumberThis is used to pass the current timestep.
          */
         data class Timestep(
             var deltaTime: Float,
             var gameTime: Float
         ) : Event() {
-            /**We are in seconds, to see the milliseconds, we must multiple by 1000 (1000 ms in 1 second)**/
+            /*We are in seconds, to see the milliseconds, we must multiple by 1000 (1000 ms in 1 second)**/
             val milliseconds: Float get() = deltaTime * 1000f
 
             override fun toString(): String =

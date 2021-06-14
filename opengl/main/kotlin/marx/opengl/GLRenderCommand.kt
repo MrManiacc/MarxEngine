@@ -6,19 +6,19 @@ import marx.engine.window.*
 import org.lwjgl.opengl.*
 import org.lwjgl.opengl.GL11.*
 
-/**
+/*
  * This is the openGL implementation of raw draw [RenderCommand]
  */
 class GLRenderCommand(val window: IWindow) : RenderCommand {
-    /**
-     * Allows for viewport resizing
+    /*
+   NumberAllows for viewport resizing
      */
     override fun viewport(size: Pair<Int, Int>, pos: Pair<Int, Int>) {
         glViewport(pos.first, pos.second, size.first, size.second)
     }
 
-    /**
-     * Clear the screen with the given color
+    /*
+   NumberClear the screen with the given color
      */
     override fun clear(color: FloatArray?, clearFlags: ClearFlags) {
         when (clearFlags) {
@@ -37,15 +37,15 @@ class GLRenderCommand(val window: IWindow) : RenderCommand {
             else if (color.size == 3) glClearColor(color[0], color[1], color[2], 1.0f)
     }
 
-    /**
-     * Swap the given buffers of the graphics context
+    /*
+   NumberSwap the given buffers of the graphics context
      */
     override fun swap() {
         window.swapBuffers()
     }
 
-    /**
-     * Poll the input for the graphics context
+    /*
+   NumberPoll the input for the graphics context
      */
     override fun poll() {
         window.pollInput()

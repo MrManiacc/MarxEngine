@@ -9,4 +9,9 @@ object MathUtils {
         }
         return out
     }
+
+    val Number.radians: Float get() = Math.toRadians(this.toDouble()).toFloat()
+
+    val Number.degrees: Float get() = Math.toDegrees(this.toDouble()).toFloat()
+
 }

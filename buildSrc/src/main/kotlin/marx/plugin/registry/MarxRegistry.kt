@@ -9,10 +9,10 @@ import java.io.*
 import marx.plugin.utils.*
 
 class MarxRegistry : Plugin<Project> {
-    /**
-     * Apply this plugin to the given target object.
+    /*
+   NumberApply this plugin to the given target object.
      *
-     * @param project The target object
+   Number@param project The target object
      */
     override fun apply(project: Project) {
         project.subprojects {

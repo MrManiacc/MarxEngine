@@ -15,36 +15,36 @@ import java.lang.IllegalStateException
 import imgui.internal.ImGui as ImGuiInternal
 import imgui.internal.flag.ImGuiDockNodeFlags as ImGuiDockNodeInternalFlags
 
-/**
+/*
  * This is kind of a wrapper around imgui for ease of use with kotlin.
  */
 class DebugRenderAPI(
     window: IWindow,
     scene: RenderScene
 ) : GLRenderAPI(window, scene) {
-    /**The constant dockspace id for the main dockspace.**/
+    /*The constant dockspace id for the main dockspace.**/
     private val dockspaceId = "main_dockspace"
 
-    /**Dynamically gets the window long reference.**/
+    /*Dynamically gets the window long reference.**/
     private val handle: Long get() = window.handle
 
-    /**This stores the glfw backend implementation for imgui**/
+    /*This stores the glfw backend implementation for imgui**/
     private val imGuiGlfw = ImGuiImplGlfw()
 
-    /**This stores the opengl backend implementation for imgui**/
+    /*This stores the opengl backend implementation for imgui**/
     private val imGuiGl3 = ImGuiImplGl3()
 
-    /**Used for getting the content region**/
+    /*Used for getting the content region**/
     private val minBuffer = ImVec2()
 
-    /**Used for getting the content region**/
+    /*Used for getting the content region**/
     private val maxBuffer = ImVec2()
 
     private lateinit var nodeEditor: NodeEditorContext
     private var init = false
 
-    /**
-     * This will initialize the gui
+    /*
+   NumberThis will initialize the gui
      */
 
     override fun init() {
@@ -57,8 +57,8 @@ class DebugRenderAPI(
         }
     }
 
-    /**
-     * This will initialize the imgui stuff
+    /*
+   NumberThis will initialize the imgui stuff
      */
     private fun initImGui() {
         ImGui.createContext();
@@ -73,8 +73,8 @@ class DebugRenderAPI(
         io.configViewportsNoTaskBarIcon = true
     }
 
-    /**
-     * This initializes our style.
+    /*
+   NumberThis initializes our style.
      */
     private fun setupStyle(style: ImGuiStyle) {
         style.windowPadding.set(15f, 15f)
@@ -124,8 +124,8 @@ class DebugRenderAPI(
         setColor(ImGuiCol.ModalWindowDimBg, ImVec4(1.00f, 0.98f, 0.95f, 0.73f))
     }
 
-    /**
-     * This sets a color for imgui
+    /*
+   NumberThis sets a color for imgui
      */
     private fun setColor(
         colorIndex: Int,
@@ -135,16 +135,16 @@ class DebugRenderAPI(
         style.setColor(colorIndex, color.x, color.y, color.z, color.w)
     }
 
-    /**
-     * This will begin the imigui frame
+    /*
+   NumberThis will begin the imigui frame
      */
     private fun startFrame() {
         imGuiGlfw.newFrame();
         ImGui.newFrame();
     }
 
-    /**
-     * This is a magic kotlin wrapper for a frame start with an automatic end.
+    /*
+   NumberThis is a magic kotlin wrapper for a frame start with an automatic end.
      */
     fun frame(frame: () -> Unit) {
         startFrame()
@@ -152,8 +152,8 @@ class DebugRenderAPI(
         endFrame()
     }
 
-    /***
-     * This will begin and end a node graph
+    /*
+   NumberThis will begin and end a node graph
      */
     fun nodeGraph(
         name: String,
@@ -164,7 +164,7 @@ class DebugRenderAPI(
         NodeEditor.end()
     }
 
-    /**Gets the center position**/
+    /*Gets the center position**/
     fun getContentCenter(): ImVec2 {
         ImGui.getWindowContentRegionMin(minBuffer)
         ImGui.getWindowContentRegionMax(maxBuffer)
@@ -175,8 +175,8 @@ class DebugRenderAPI(
         return ImVec2((minX + maxX) / 2f, (minY + maxY) / 20f)
     }
 
-    /**
-     * This will end the imgui frame
+    /*
+   NumberThis will end the imgui frame
      */
     private fun endFrame() {
         ImGui.render();
@@ -189,8 +189,8 @@ class DebugRenderAPI(
         }
     }
 
-    /**
-     * This will create the fullscreen dock-space window.
+    /*
+   NumberThis will create the fullscreen dock-space window.
      */
     fun dockspace(
         name: String,
@@ -227,8 +227,8 @@ class DebugRenderAPI(
         ImGui.end()
     }
 
-    /**
-     * This internally creates the dock when it's not present.
+    /*
+   NumberThis internally creates the dock when it's not present.
      */
     private fun createDock(name: String) {
         val viewport = ImGui.getWindowViewport()
@@ -244,7 +244,7 @@ class DebugRenderAPI(
         ImGuiInternal.dockBuilderFinish(dockspaceID)
     }
 
-    /**Called upon unloading of the given renderAPI **/
+    /*Called upon unloading of the given renderAPI **/
     override fun dispose() {
         ImGui.destroyContext()
         imGuiGlfw.dispose()

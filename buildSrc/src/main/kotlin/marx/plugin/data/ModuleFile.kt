@@ -10,7 +10,7 @@ import org.gradle.internal.os.*
 import java.lang.Exception
 import java.util.function.*
 
-/**
+/*
  * This will parse out all of the data associated with a mod.toml file
  */
 class ModuleFile(val project: Project) {
@@ -21,8 +21,8 @@ class ModuleFile(val project: Project) {
         null
     }
 
-    /**
-     * @return true when [parsed] is invalid. This means we have child projects
+    /*
+   Number@return true when [parsed] is invalid. This means we have child projects
      */
     val isLibrary: Boolean = parsed == null &&
             project.projectDir.containsRecursive { it.endsWith(".toml") }
@@ -73,22 +73,22 @@ class ModuleFile(val project: Project) {
             else -> "linux"
         }
 
-    /**Allows us to map input values directly with a unit and a string return**/
+    /*Allows us to map input values directly with a unit and a string return**/
     private val defaultExtensions: Map<String, () -> String> = mapOf(
         "__project_dir__" to { project.projectDir.path.replace("\\", "/") },
         "__root_dir__" to { project.rootDir.path.replace("\\", "/") },
         "__platform__" to { platform }
     )
 
-    /**
-     * This will take a given file and recursively apply the predicate. This allows for
-     * recursive matching of a given predicate
+    /*
+   NumberThis will take a given file and recursively apply the predicate. This allows for
+   Numberrecursive matching of a given predicate
      */
     private fun File.containsRecursive(predicate: Predicate<File>): Boolean = findRecursive(predicate) != null
 
-    /**
-     * This will take a given file and recursively apply the predicate. This allows for
-     * recursive matching of a given predicate
+    /*
+   NumberThis will take a given file and recursively apply the predicate. This allows for
+   Numberrecursive matching of a given predicate
      */
     private fun File.findRecursive(predicate: Predicate<File>): File? {
         if (this.isFile && predicate.test(this)) return this
@@ -99,8 +99,8 @@ class ModuleFile(val project: Project) {
         return null
     }
 
-    /**
-     * This will update all of the variables with the correct extensions
+    /*
+   NumberThis will update all of the variables with the correct extensions
      */
     fun map() {
         mapDefaultExtensions()
@@ -146,8 +146,8 @@ class ModuleFile(val project: Project) {
         if (isRunnable) this.entryPoint = mapString(entryPoint, map)
     }
 
-    /**
-     * This will put all of our shared values in the global map
+    /*
+   NumberThis will put all of our shared values in the global map
      */
     fun mapGlobals(map: MutableMap<String, String>) {
         for (entry in this.sharedExtensions) {

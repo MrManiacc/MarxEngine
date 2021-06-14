@@ -7,7 +7,7 @@ import org.joml.*
 import org.lwjgl.opengl.GL20.*
 import java.nio.*
 
-/**
+/*
  * This is the shader implemented with opengl
  */
 class GLShader(val app: Application<*>) : Shader() {
@@ -18,8 +18,8 @@ class GLShader(val app: Application<*>) : Shader() {
     private val mat4Buffer: FloatArray = FloatArray(4 * 4)
     private val mat3Buffer: FloatArray = FloatArray(3 * 3)
 
-    /***
-     * This should compile the shader.
+    /*
+   NumberThis should compile the shader.
      */
     override fun compile(sources: ShaderProgram): Boolean {
         val shaders = sources.sources
@@ -69,8 +69,8 @@ class GLShader(val app: Application<*>) : Shader() {
         return shader
     }
 
-    /**
-     * Compiles the shaders and links them. Will return the result along with the message
+    /*
+   NumberCompiles the shaders and links them. Will return the result along with the message
      */
     private fun createProgram(): CompileResult {
         shaderProgram = glCreateProgram()
@@ -99,8 +99,8 @@ class GLShader(val app: Application<*>) : Shader() {
         )
     }
 
-    /**
-     * This should destroy the shader program. Called upon closing of a layer or the window/app
+    /*
+   NumberThis should destroy the shader program. Called upon closing of a layer or the window/app
      */
     override fun destroy() {
         glDeleteProgram(shaderProgram)
@@ -111,48 +111,48 @@ class GLShader(val app: Application<*>) : Shader() {
         fragmentShader = -1
     }
 
-    /**
-     * Bind the shader for writing to
+    /*
+   NumberBind the shader for writing to
      */
     override fun bind() =
         glUseProgram(shaderProgram)
 
-    /**
-     * Unbind the shader, called when we are done writing.
+    /*
+   NumberUnbind the shader, called when we are done writing.
      */
     override fun unbind() =
         glUseProgram(0)
 
-    /**This should update a vec4 to the shader**/
+    /*This should update a vec4 to the shader**/
     override fun updateVec4(uniform: String, vector: Vector4f) {
         TODO("Not yet implemented")
     }
 
-    /**This should update a vec3 to the shader**/
+    /*This should update a vec3 to the shader**/
     override fun updateVec3(uniform: String, vector: Vector3f) {
         val location = glGetUniformLocation(shaderProgram, uniform)
         glUniform3f(location, vector.x, vector.y, vector.z)
     }
 
-    /**This should update a vec2 to the shader**/
+    /*This should update a vec2 to the shader**/
     override fun updateVec2(uniform: String, vector: Vector2f) {
         val location = glGetUniformLocation(shaderProgram, uniform)
         glUniform2f(location, vector.x, vector.y)
     }
 
-    /**This should update a float to the shader**/
+    /*This should update a float to the shader**/
     override fun uploadFloat(uniform: String, float: Float) {
         val location = glGetUniformLocation(shaderProgram, uniform)
         glUniform1f(location, float)
     }
 
-    /**This should update a float to the shader**/
+    /*This should update a float to the shader**/
     override fun uploadMat4(uniform: String, matrix: Matrix4f) {
         val location = glGetUniformLocation(shaderProgram, uniform)
         glUniformMatrix4fv(location, false, matrix.get(mat4Buffer))
     }
 
-    /**This should update a float to the shader**/
+    /*This should update a float to the shader**/
     override fun uploadMat3(uniform: String, matrix: Matrix3f) {
         val location = glGetUniformLocation(shaderProgram, uniform)
         glUniformMatrix3fv(location, false, matrix.get(mat3Buffer))

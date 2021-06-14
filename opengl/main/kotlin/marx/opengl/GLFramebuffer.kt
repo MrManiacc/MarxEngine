@@ -1,6 +1,6 @@
 package marx.opengl
 
-/**
+/*
  * Framebuffer Objects are OpenGL Objects, which allow for the creation of user-defined Framebuffers.
  * With them, one can render to non-Default Framebuffer locations, and thus render without disturbing the main screen.
  *

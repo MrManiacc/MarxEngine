@@ -1,11 +1,11 @@
-package marx.engine.math.vectors
+package marx.engine.math
 
-import marx.engine.math.comp.*
-import marx.engine.math.comp.Comp.*
-import marx.engine.math.comp.comps.*
-import marx.engine.math.comp.comps.AxisAngle.*
-import marx.engine.math.comp.comps.Position.*
-import marx.engine.math.comp.comps.Rotation.*
+import marx.engine.math.components.*
+import marx.engine.math.Comp.*
+
+import marx.engine.math.components.AxisAngle.*
+import marx.engine.math.components.Position.*
+import marx.engine.math.components.Rotation.*
 import org.joml.*
 import java.nio.*
 import java.text.*
@@ -47,33 +47,23 @@ class Vec3 : Vector3f, IVec<Vec3> {
         buffer: FloatBuffer?
     ) : super(index, buffer)
 
-    /**
-     * This should divide add vector [V] from this vector [SELF]
-     */
+    /* should divide add vector [V] from this vector [SELF]*/
     override fun <V : IVec<*>> plus(other: V): Vec3 =
         Vec3(this.x + other[X, 0f], this.y + other[Y, 0f], this.z + other[Z, 0f])
 
-    /**
-     * This should divide subtract vector [V] from this vector [SELF]
-     */
+    /* should divide subtract vector [V] from this vector [SELF]*/
     override fun <V : IVec<*>> minus(other: V): Vec3 =
         Vec3(this.x - other[X, 0f], this.y - other[Y, 0f], this.z - other[Z, 0f])
 
-    /**
-     * This should divide this vector [SELF] by the other vector [V]
-     */
+    /* should divide this vector [SELF] by the other vector [V]*/
     override fun <V : IVec<*>> div(other: V): Vec3 =
         Vec3(this.x / other[X, 1f], this.y / other[Y, 1f], this.z / other[Z, 1f])
 
-    /**
-     * This should multiple this vector [SELF] by the other vector [V]
-     */
+    /* should multiple this vector [SELF] by the other vector [V]*/
     override fun <V : IVec<*>> times(other: V): Vec3 =
         Vec3(this.x * other[X, 1f], this.y * other[Y, 1f], this.z * other[Z, 1f])
 
-    /**
-     * This should set the float at the given index
-     */
+    /* should set the float at the given index*/
     override operator fun set(
         component: Comp,
         value: Float
@@ -85,9 +75,7 @@ class Vec3 : Vector3f, IVec<Vec3> {
         }
     }
 
-    /**
-     * This should get the
-     */
+    /* should get the component's value*/
     override operator fun get(component: Comp): Float? =
         when (component.idx) {
             0 -> x

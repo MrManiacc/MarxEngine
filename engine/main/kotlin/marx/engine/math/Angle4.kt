@@ -1,15 +1,14 @@
-package marx.engine.math.rotations
+package marx.engine.math
 
-import marx.engine.math.comp.*
-import marx.engine.math.comp.Comp.*
-import marx.engine.math.comp.comps.*
-import marx.engine.math.comp.comps.AxisAngle.*
-import marx.engine.math.comp.comps.Position.*
-import marx.engine.math.comp.comps.Rotation.*
-import marx.engine.math.vectors.*
+import marx.engine.math.*
+import marx.engine.math.components.*
+import marx.engine.math.Comp.*
+import marx.engine.math.components.AxisAngle.*
+import marx.engine.math.components.Position.*
+import marx.engine.math.components.Rotation.*
 import org.joml.*
 
-/**
+/*
  * This represents a rotation like interface.
  */
 class Angle4 : AxisAngle4f, IVec<Angle4> {
@@ -28,9 +27,7 @@ class Angle4 : AxisAngle4f, IVec<Angle4> {
         v: Vector3fc?
     ) : super(angle, v)
 
-    /**
-     * This should divide add vector [OTHER] from this vector [SELF]
-     */
+    /*This should divide add vector [OTHER] from this vector [SELF]*/
     override fun <OTHER : IVec<*>> plus(other: OTHER): Angle4 {
         this.x += other[AxisX, other[X, 0f]]
         this.y += other[AxisY, other[Y, 0f]]
@@ -39,9 +36,7 @@ class Angle4 : AxisAngle4f, IVec<Angle4> {
         return this
     }
 
-    /**
-     * This should divide subtract vector [OTHER] from this vector [SELF]
-     */
+    /*This should divide subtract vector [OTHER] from this vector [SELF]*/
     override fun <OTHER : IVec<*>> minus(other: OTHER): Angle4 {
         this.x -= other[AxisX, other[X, 0f]]
         this.y -= other[AxisY, other[Y, 0f]]
@@ -50,9 +45,7 @@ class Angle4 : AxisAngle4f, IVec<Angle4> {
         return this
     }
 
-    /**
-     * This should divide this vector [SELF] by the other vector [OTHER]
-     */
+    /*This should divide this vector [SELF] by the other vector [OTHER]*/
     override fun <OTHER : IVec<*>> div(other: OTHER): Angle4 {
         this.x /= other[AxisX, other[X, 1f]]
         this.y /= other[AxisY, other[Y, 1f]]
@@ -61,9 +54,7 @@ class Angle4 : AxisAngle4f, IVec<Angle4> {
         return this
     }
 
-    /**
-     * This should multiple this vector [SELF] by the other vector [OTHER]
-     */
+    /*This should multiple this vector [SELF] by the other vector [OTHER]*/
     override fun <OTHER : IVec<*>> times(other: OTHER): Angle4 {
         this.x += other[AxisX, other[X, 0f]]
         this.y += other[AxisY, other[Y, 0f]]
@@ -72,9 +63,7 @@ class Angle4 : AxisAngle4f, IVec<Angle4> {
         return this
     }
 
-    /**
-     * This should set the float at the given index
-     */
+    /*This should set the float at the given index*/
     override fun set(
         component: Comp,
         value: Float
@@ -87,10 +76,14 @@ class Angle4 : AxisAngle4f, IVec<Angle4> {
         }
     }
 
-    /**
-     * This should get the
-     */
+    /*This should get the angle components*/
     override fun get(component: Comp): Float? {
-        TODO("Not yet implemented")
+        return when (component) {
+            AxisX, X, Pitch -> this.x
+            AxisY, Y, Yaw -> this.y
+            AxisZ, Z, Roll -> this.z
+            Angle -> this.angle
+            else -> null
+        }
     }
 }

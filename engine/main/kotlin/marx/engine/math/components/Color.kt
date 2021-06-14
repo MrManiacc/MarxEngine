@@ -1,6 +1,6 @@
-package marx.engine.math.comp.comps
+package marx.engine.math.components
 
-import marx.engine.math.comp.*
+import marx.engine.math.*
 
 interface Color {
 

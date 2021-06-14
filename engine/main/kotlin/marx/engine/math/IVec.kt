@@ -1,0 +1,58 @@
+package marx.engine.math
+
+import marx.engine.math.components.*
+import marx.engine.math.Comp.*
+import java.lang.Exception
+
+/**
+ * This unifies all vectors.
+ */
+interface IVec<SELF : IVec<SELF>> {
+
+    /*The component's we posses*/
+    val components: Array<Comp> get() = arrayOf(None)
+
+    /*NumberThis should divide add vector [OTHER] from this vector [SELF]*/
+    operator fun <OTHER : IVec<*>> plus(other: OTHER): SELF
+
+    /*NumberThis should divide subtract vector [OTHER] from this vector [SELF]*/
+    operator fun <OTHER : IVec<*>> minus(other: OTHER): SELF
+
+    /*NumberThis should divide this vector [SELF] by the other vector [OTHER]*/
+    operator fun <OTHER : IVec<*>> div(other: OTHER): SELF
+
+    /*NumberThis should multiple this vector [SELF] by the other vector [OTHER]*/
+    operator fun <OTHER : IVec<*>> times(other: OTHER): SELF
+
+    /*NumberThis should divide add vector [Number] from this vector [SELF]*/
+    operator fun plus(number: Number): SELF = plus(Vec2(number))
+
+    /*NumberThis should divide subtract vector [OTHER] from this vector [SELF]*/
+    operator fun minus(number: Number): SELF = minus(Vec2(number))
+
+    /*NumberThis should divide this vector [SELF] by the other vector [OTHER]*/
+    operator fun div(number: Number): SELF = div(Vec2(number))
+
+    /*NumberThis should multiple the given vec by the number*/
+    operator fun times(number: Number): SELF = times(Vec2(number))
+
+    /*NumberUsed to check if we have the component*/
+    fun has(component: Comp) = components.contains(component)
+
+    /*NumberThis should set the float at the given index*/
+    operator fun set(
+        component: Comp,
+        value: Float
+    )
+
+    /*NumberThis should get the*/
+    operator fun get(component: Comp): Float?
+
+    /*NumberThis should get the*/
+    operator fun get(
+        component: Comp,
+        default: Float
+    ) = get(component) ?: default
+
+
+}

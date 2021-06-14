@@ -1,15 +1,15 @@
-package marx.engine.math.vectors
+package marx.engine.math
 
-import marx.engine.math.comp.*
-import marx.engine.math.comp.comps.*
-import marx.engine.math.comp.comps.AxisAngle.*
-import marx.engine.math.comp.comps.Position.*
-import marx.engine.math.comp.comps.Rotation.*
+import marx.engine.math.components.*
+
+import marx.engine.math.components.AxisAngle.*
+import marx.engine.math.components.Position.*
+import marx.engine.math.components.Rotation.*
 import org.joml.*
 import java.nio.*
 import java.text.*
 
-/**
+/*
  * This is our implementation of a vector4f. Its based upon joml's implementation
  */
 class Vec4 : Vector4f, IVec<Vec4> {
@@ -59,33 +59,23 @@ class Vec4 : Vector4f, IVec<Vec4> {
         buffer: FloatBuffer?
     ) : super(index, buffer)
 
-    /**
-     * This should divide add vector [V] from this vector [SELF]
-     */
+    /*This should divide add vector [V] from this vector [SELF]*/
     override fun <V : IVec<*>> plus(other: V): Vec4 =
         Vec4(this.x + other[X, 0f], this.y + other[Y, 0f], this.z + other[Z, 0f], this.w + other[W, 0f])
 
-    /**
-     * This should divide subtract vector [V] from this vector [SELF]
-     */
+    /*This should divide subtract vector [V] from this vector [SELF]*/
     override fun <V : IVec<*>> minus(other: V): Vec4 =
         Vec4(this.x - other[X, 0f], this.y - other[Y, 0f], this.z - other[Z, 0f], this.w - other[W, 0f])
 
-    /**
-     * This should divide this vector [SELF] by the other vector [V]
-     */
+    /*NumberThis should divide this vector [SELF] by the other vector [V]*/
     override fun <V : IVec<*>> div(other: V): Vec4 =
         Vec4(this.x / other[X, 1f], this.y / other[Y, 1f], this.z / other[Z, 1f], this.w / other[W, 1f])
 
-    /**
-     * This should multiple this vector [SELF] by the other vector [V]
-     */
+    /*This should multiple this vector [SELF] by the other vector [V]*/
     override fun <V : IVec<*>> times(other: V): Vec4 =
         Vec4(this.x * other[X, 1f], this.y * other[Y, 1f], this.z * other[Z, 1f], this.w * other[W, 1f])
 
-    /**
-     * This should set the float at the given index
-     */
+    /*This should set the float at the given index*/
     override operator fun set(
         component: Comp,
         value: Float
@@ -98,9 +88,7 @@ class Vec4 : Vector4f, IVec<Vec4> {
         }
     }
 
-    /**
-     * This should get the
-     */
+    /*This should get the component value*/
     override operator fun get(component: Comp): Float =
         when (component.idx) {
             0 -> x

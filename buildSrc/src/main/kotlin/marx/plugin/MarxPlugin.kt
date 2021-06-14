@@ -6,7 +6,7 @@ import org.gradle.kotlin.dsl.*
 import marx.plugin.data.ModuleFile
 import org.gradle.jvm.tasks.*
 
-/**
+/*
  * This configures all of the modules for a quicker build.
  */
 class MarxPlugin : Plugin<Project> {
@@ -35,10 +35,10 @@ class MarxPlugin : Plugin<Project> {
         }
     }
 
-    /**
-     * Apply this plugin to the given target object.
+    /*
+   NumberApply this plugin to the given target object.
      *
-     * @param target The target object
+   Number@param target The target object
      */
     override fun apply(target: Project) {
         target.beforeEvaluate {

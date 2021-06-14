@@ -1,60 +1,51 @@
 package marx.engine.math
 
-import marx.engine.math.comp.*
-import marx.engine.math.comp.Comp.*
-import marx.engine.math.comp.comps.*
-import marx.engine.math.comp.comps.Position.*
-import marx.engine.math.comp.comps.Rotation.*
-import marx.engine.math.comp.comps.Scale.*
-import marx.engine.math.vectors.*
+import marx.engine.math.components.*
+import marx.engine.math.Comp.*
+import marx.engine.math.MathDSL.Conversions.rads3
+
+import marx.engine.math.components.Position.*
+import marx.engine.math.components.Rotation.*
+import marx.engine.math.components.Scale.*
+
 import org.joml.*
 
 /**
  * This is applied to game objects for rendering. This allows translating, rotating, and scaling in a 3d scene.
  */
 data class Transform(
-    val position: Vector3f,
-    val rotation: Vector3f,
-    val scale: Vector3f
+    val position: Vec3,
+    val rotation: Vec3,
+    val scale: Vec3
 ) : IVec<Transform> {
     private val bufferMatrix: Matrix4f = Matrix4f()
 
-    /**
-     * This is a dynamic variable that is updated per the position, rotation and scale
-     */
+    /*This is a dynamic variable that is updated per the position, rotation and scale*/
     val matrix: Matrix4f
         get() = bufferMatrix.identity()
             .translate(position)
-            .rotateXYZ(rotation)
+            .rotateXYZ(rotation.rads3)
             .scale(scale)
 
-    /**
-     * This should divide add vector [OTHER] from this vector [SELF]
-     */
+    /*This should divide add vector [OTHER] from this vector [SELF]*/
     override fun <OTHER : IVec<*>> plus(other: OTHER): Transform {
         this.position.add(other[X, 0f], other[Y, 0f], other[Z, 0f])
         return this
     }
 
-    /**
-     * This should divide subtract vector [OTHER] from this vector [SELF]
-     */
+    /*This should divide subtract vector [OTHER] from this vector [SELF]*/
     override fun <OTHER : IVec<*>> minus(other: OTHER): Transform {
         this.position.sub(other[X, 0f], other[Y, 0f], other[Z, 0f])
         return this
     }
 
-    /**
-     * This should divide this vector [SELF] by the other vector [OTHER]
-     */
+    /*This should divide this vector [SELF] by the other vector [OTHER]*/
     override fun <OTHER : IVec<*>> div(other: OTHER): Transform {
         this.position.div(other[X, 1f], other[Y, 1f], other[Z, 1f])
         return this
     }
 
-    /**
-     * This should multiple this vector [SELF] by the other vector [OTHER]
-     */
+    /*This should multiple this vector [SELF] by the other vector [OTHER]*/
     override fun <OTHER : IVec<*>> times(other: OTHER): Transform {
         this.position.mul(other[X, 1f], other[Y, 1f], other[Z, 1f])
         return this
@@ -90,9 +81,7 @@ data class Transform(
         return this
     }
 
-    /**
-     * This should set the float at the given index
-     */
+    /*This should set the float at the given index*/
     override fun set(
         component: Comp,
         value: Float
@@ -110,9 +99,7 @@ data class Transform(
         }
     }
 
-    /**
-     * This should get the
-     */
+    /*This should get the*/
     override fun get(component: Comp): Float? =
         when (component) {
             X -> this.position.x

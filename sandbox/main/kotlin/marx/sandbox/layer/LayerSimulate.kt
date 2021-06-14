@@ -14,14 +14,14 @@ import mu.*
 import org.lwjgl.glfw.GLFW.*
 import org.slf4j.*
 
-/**
+/*
  * This layer is used for debugging purposes
  */
 class LayerSimulate(app: Application<*>) : Layer<GLRenderAPI>(app, GLRenderAPI::class, "simulation-layer") {
     private val log: Logger = KotlinLogging.logger { }
     private val shader = GLShader(app)
 
-    /**This creates a quad of size 0.5**/
+    /*This creates a quad of size 0.5**/
     val quadVAO: VertexArray = GLVertexArray().apply {
         this += GLVertexBuffer(
             floatArrayOf(
@@ -40,7 +40,7 @@ class LayerSimulate(app: Application<*>) : Layer<GLRenderAPI>(app, GLRenderAPI::
         )
     }
 
-    /**This creates a quad of size 0.5**/
+    /*This creates a quad of size 0.5**/
     val triangleVAO: VertexArray = GLVertexArray().apply {
         this += GLVertexBuffer(
             floatArrayOf(
@@ -57,8 +57,8 @@ class LayerSimulate(app: Application<*>) : Layer<GLRenderAPI>(app, GLRenderAPI::
         )
     }
 
-    /**
-     * This is called upon the layer being presented.
+    /*
+   NumberThis is called upon the layer being presented.
      */
     override fun onAttach() {
         renderAPI.init()
@@ -67,8 +67,8 @@ class LayerSimulate(app: Application<*>) : Layer<GLRenderAPI>(app, GLRenderAPI::
         if (shader.compile(Shaders.simple)) log.warn("Successfully compiled shader: ${shader::class.qualifiedName}")
     }
 
-    /**
-     * This will draw every frame
+    /*
+   NumberThis will draw every frame
      */
     override fun onUpdate(update: Timestep) {
         shader.bind()

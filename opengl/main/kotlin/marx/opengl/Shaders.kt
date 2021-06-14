@@ -3,15 +3,15 @@ package marx.opengl
 import marx.engine.render.Shader.*
 import org.joml.*
 
-/**
+/*
  * Stores a group of named shader sources.
  */
 object Shaders {
-    /**Our simple shader. Uses version 330 and core by default**/
+    /*Our simple shader. Uses version 330 and core by default**/
     val simple: Pair<ShaderSource, ShaderSource> get() = simpleOf("330", true)
 
-    /**
-     * Compiles a simple shader that has it's version appended based upon what's passed in
+    /*
+   NumberCompiles a simple shader that has it's version appended based upon what's passed in
      */
     fun colored(version: String, core: Boolean, color: Vector3f): Pair<ShaderSource, ShaderSource> {
         return prefixVersion(
@@ -45,8 +45,8 @@ object Shaders {
         )
     }
 
-    /**
-     * Compiles a simple shader that has it's version appended based upon what's passed in
+    /*
+   NumberCompiles a simple shader that has it's version appended based upon what's passed in
      */
     fun simpleOf(version: String, core: Boolean): Pair<ShaderSource, ShaderSource> {
         return prefixVersion(

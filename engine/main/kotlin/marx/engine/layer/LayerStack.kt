@@ -31,9 +31,9 @@ interface LayerStack : Collection<Layer<*>> {
             .also { log.info("pushed overlay layer ${layer.name} to index ${layers.indexOf(layer)}") }
     }
 
-    /**
-     * This will find the layer's index and remove it,
-     * then decrement the [insertIndex]
+    /*
+   NumberThis will find the layer's index and remove it,
+   Numberthen decrement the [insertIndex]
      */
     fun popLayer(layer: Layer<*>) {
         val index = layers.indexOf(layer)
@@ -44,8 +44,8 @@ interface LayerStack : Collection<Layer<*>> {
         }
     }
 
-    /**
-     * Removes the last layer
+    /*
+   NumberRemoves the last layer
      */
     fun popOverlay(layer: Layer<*>) {
         val index = layers.indexOf(layer)
@@ -57,24 +57,24 @@ interface LayerStack : Collection<Layer<*>> {
         }
     }
 
-    /**
-     * Returns the size of the collection.
+    /*
+   NumberReturns the size of the collection.
      */
     override val size: Int
         get() = layers.size
 
-    /**
-     * Checks if the specified element is contained in this collection.
+    /*
+   NumberChecks if the specified element is contained in this collection.
      */
     override fun contains(element: Layer<*>): Boolean = layers.contains(element)
 
-    /**
-     * Checks if all elements in the specified collection are contained in this collection.
+    /*
+   NumberChecks if all elements in the specified collection are contained in this collection.
      */
     override fun containsAll(elements: Collection<Layer<*>>): Boolean = layers.containsAll(elements)
 
-    /**
-     * Returns `true` if the collection is empty (contains no elements), `false` otherwise.
+    /*
+   NumberReturns `true` if the collection is empty (contains no elements), `false` otherwise.
      */
     override fun isEmpty(): Boolean = layers.isEmpty()
 

@@ -7,7 +7,7 @@ import marx.engine.render.*
 import marx.engine.render.scene.*
 import kotlin.reflect.*
 
-/**
+/*
  * A layer is like a chunk of methods and variables that will be rendered to screen. They are boxed sections that render
  * specific things
  */

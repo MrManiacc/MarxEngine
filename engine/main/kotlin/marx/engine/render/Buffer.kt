@@ -5,7 +5,7 @@ import java.lang.IllegalStateException
 import kotlin.reflect.full.*
 import kotlin.reflect.jvm.*
 
-/**
+/*
  * This is the underlying data structure that will be sent to the graphics card. It should have all of the
  * mesh data
  */

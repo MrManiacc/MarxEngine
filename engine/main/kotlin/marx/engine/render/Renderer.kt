@@ -5,30 +5,30 @@ import mu.*
 import java.lang.IllegalStateException
 import kotlin.reflect.*
 
-/**
+/*
  * This is hte core of the
  */
 object Renderer {
     val renderers: MutableMap<KClass<out RenderAPI>, RenderAPI> = Maps.newHashMap()
     val log = KotlinLogging.logger { }
 
-    /**
-     * sets/registers [API] to the corresponding [context]
+    /*
+   Numbersets/registers [API] to the corresponding [context]
      */
     operator fun set(API: KClass<out RenderAPI>, context: RenderAPI) = context.let {
         renderers[API] = it
         log.info { "registered rendered: ${API::class.qualifiedName}" }
     }
 
-    /**
-     * This will register the give api
+    /*
+   NumberThis will register the give api
      */
     inline fun <reified API : RenderAPI> register(renderer: API) =
         set(API::class, renderer)
 
-    /**
-     * [API] the render api to get the render context for
-     * This will get the corresponding [RenderAPI] per the given type
+    /*
+   Number[API] the render api to get the render context for
+   NumberThis will get the corresponding [RenderAPI] per the given type
      */
     operator fun <API : RenderAPI> invoke(cls: KClass<API>): API {
         if (!renderers.containsKey(cls)) return casted(cls, RenderAPI.Null)
@@ -42,9 +42,9 @@ object Renderer {
 
     inline fun <reified API : RenderAPI> casted(renderAPI: RenderAPI): API = casted(API::class, renderAPI)
 
-    /**
-     * [API] the render api to get the render context for
-     * This will get the corresponding [RenderAPI] per the given type
+    /*
+   Number[API] the render api to get the render context for
+   NumberThis will get the corresponding [RenderAPI] per the given type
      */
     inline operator fun <reified API : RenderAPI> invoke(): API =
         invoke(API::class)

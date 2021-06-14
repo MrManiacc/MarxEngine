@@ -4,7 +4,7 @@ import marx.engine.math.*
 import marx.engine.render.*
 import marx.engine.render.camera.*
 
-/**
+/*
  * This allows us to render a scene. It is platform agnostic
  */
 interface RenderScene {
@@ -16,28 +16,28 @@ interface RenderScene {
         endScene()
     }
 
-    /**
-     * This will start a new scene
+    /*
+   NumberThis will start a new scene
      */
     fun beginScene(camera: Camera<*>)
 
-    /**
-     * This method should be overloaded for all of the various types of things we can submit
+    /*
+   NumberThis method should be overloaded for all of the various types of things we can submit
      */
     fun submit(array: VertexArray)
 
-    /**
-     * This method should be overloaded for all of the various types of things we can submit
+    /*
+   NumberThis method should be overloaded for all of the various types of things we can submit
      */
     fun submit(array: VertexArray, shader: Shader, transform: Transform)
 
-    /**
-     * This clears our all of objects or entities on the scene
+    /*
+   NumberThis clears our all of objects or entities on the scene
      */
     fun flush()
 
-    /**
-     * Ends the current scene, renders all of the submitted meshes
+    /*
+   NumberEnds the current scene, renders all of the submitted meshes
      */
     fun endScene()
 
