@@ -1,11 +1,8 @@
 package marx.sandbox.layer
 
-import imgui.*
-import imgui.flag.ImGuiWindowFlags.*
-import marx.editor.wrapper.*
 import marx.engine.*
 import marx.engine.events.*
-import marx.engine.events.Events.App.Update
+import marx.engine.events.Events.App.Timestep
 import marx.engine.events.Events.Input.KeyPress
 import marx.engine.events.Events.Shader.*
 import marx.engine.layer.*
@@ -16,8 +13,6 @@ import marx.opengl.GLBuffer.GLVertexBuffer
 import mu.*
 import org.lwjgl.glfw.GLFW.*
 import org.slf4j.*
-import kotlin.math.*
-import kotlin.time.*
 
 /**
  * This layer is used for debugging purposes
@@ -75,7 +70,7 @@ class LayerSimulate(app: Application<*>) : Layer<GLRenderAPI>(app, GLRenderAPI::
     /**
      * This will draw every frame
      */
-    override fun onUpdate(update: Update) {
+    override fun onUpdate(update: Timestep) {
         shader.bind()
         scene.submit(triangleVAO)
         shader.unbind()

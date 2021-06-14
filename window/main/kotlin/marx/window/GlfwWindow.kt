@@ -91,6 +91,8 @@ data class GlfwWindow(
             fullscreen = !fullscreen
         if (event.key == GLFW_KEY_F2)
             center()
+        if (event.key == GLFW_KEY_F3)
+            vsync = !vsync
         if (event.key == GLFW_KEY_ESCAPE)
             app.destroy()
 

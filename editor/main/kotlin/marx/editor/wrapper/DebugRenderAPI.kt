@@ -1,15 +1,13 @@
 package marx.editor.wrapper
 
 import imgui.*
-import imgui.extension.imguizmo.*
 import imgui.extension.nodeditor.*
 import imgui.flag.*
 import imgui.gl3.*
 import imgui.glfw.*
 import imgui.type.*
-import marx.engine.render.*
 import marx.engine.render.scene.*
-import marx.engine.utils.*
+import marx.engine.utils.MathUtils.orEquals
 import marx.engine.window.*
 import marx.opengl.*
 import org.lwjgl.glfw.*
@@ -20,7 +18,10 @@ import imgui.internal.flag.ImGuiDockNodeFlags as ImGuiDockNodeInternalFlags
 /**
  * This is kind of a wrapper around imgui for ease of use with kotlin.
  */
-class DebugRenderAPI(window: IWindow, scene: RenderScene) : GLRenderAPI(window, scene) {
+class DebugRenderAPI(
+    window: IWindow,
+    scene: RenderScene
+) : GLRenderAPI(window, scene) {
     /**The constant dockspace id for the main dockspace.**/
     private val dockspaceId = "main_dockspace"
 
@@ -126,7 +127,10 @@ class DebugRenderAPI(window: IWindow, scene: RenderScene) : GLRenderAPI(window, 
     /**
      * This sets a color for imgui
      */
-    private fun setColor(colorIndex: Int, color: ImVec4) {
+    private fun setColor(
+        colorIndex: Int,
+        color: ImVec4
+    ) {
         val style = ImGui.getStyle()
         style.setColor(colorIndex, color.x, color.y, color.z, color.w)
     }
@@ -151,7 +155,10 @@ class DebugRenderAPI(window: IWindow, scene: RenderScene) : GLRenderAPI(window, 
     /***
      * This will begin and end a node graph
      */
-    fun nodeGraph(name: String, draw: () -> Unit) {
+    fun nodeGraph(
+        name: String,
+        draw: () -> Unit
+    ) {
         NodeEditor.begin("node_graph_$name")
         draw()
         NodeEditor.end()
@@ -185,7 +192,11 @@ class DebugRenderAPI(window: IWindow, scene: RenderScene) : GLRenderAPI(window, 
     /**
      * This will create the fullscreen dock-space window.
      */
-    fun dockspace(name: String, nodes: () -> Unit, editor: () -> Unit) {
+    fun dockspace(
+        name: String,
+        nodes: () -> Unit,
+        editor: () -> Unit
+    ) {
         val flags = ImGuiWindowFlags.NoNavFocus.orEquals(
             ImGuiWindowFlags.NoTitleBar,
             ImGuiWindowFlags.NoCollapse,

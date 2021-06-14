@@ -1,5 +1,6 @@
 package marx.engine.render.scene
 
+import marx.engine.math.*
 import marx.engine.render.*
 import marx.engine.render.camera.*
 
@@ -28,7 +29,7 @@ interface RenderScene {
     /**
      * This method should be overloaded for all of the various types of things we can submit
      */
-    fun submit(array: VertexArray, shader: Shader)
+    fun submit(array: VertexArray, shader: Shader, transform: Transform)
 
     /**
      * This clears our all of objects or entities on the scene

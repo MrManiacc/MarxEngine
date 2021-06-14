@@ -4,8 +4,6 @@ import org.gradle.api.*
 import org.gradle.api.tasks.*
 import org.gradle.kotlin.dsl.*
 import marx.plugin.data.ModuleFile
-import org.gradle.api.internal.file.archive.*
-import org.gradle.api.plugins.*
 import org.gradle.jvm.tasks.*
 
 /**
@@ -24,7 +22,10 @@ class MarxPlugin : Plugin<Project> {
         }
     }
 
-    private fun forEach(input: String, callback: (string: String) -> Unit) {
+    private fun forEach(
+        input: String,
+        callback: (string: String) -> Unit
+    ) {
         if (!input.contains(",")) callback(input)
         else {
             val split = input.split(",")
@@ -73,6 +74,15 @@ class MarxPlugin : Plugin<Project> {
                     )
                 }
             }
+
+            modFile.testImplements.forEach {
+                forEach(it) { str ->
+                    target.configurations.getByName("testImplementation").dependencies.add(
+                        target.dependencies.add("testImplementation", str)
+                    )
+                }
+            }
+
             modFile.runtimes.forEach {
                 forEach(it) { str ->
                     target.configurations.getByName("runtime").dependencies.add(
@@ -115,8 +125,14 @@ class MarxPlugin : Plugin<Project> {
         val modFile = getModFile(target)
         modFile.map()
         val main = target.the<SourceSetContainer>().named("main").get()
-        main.java.setSrcDirs(modFile.sources)
-        main.resources.setSrcDirs(modFile.assets)
+        main.java.setSrcDirs(modFile.mainSources)
+        main.resources.setSrcDirs(modFile.mainAssets)
+
+        val test = target.the<SourceSetContainer>().named("test").get()
+        test.java.setSrcDirs(modFile.testSources)
+        test.resources.setSrcDirs(modFile.testAssets)
+        test.runtimeClasspath += main.output + test.output
+
     }
 
 

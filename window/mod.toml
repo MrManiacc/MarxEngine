@@ -6,27 +6,19 @@ dir = "__root_dir__/window" #gets the current dir of the module.toml
 [main]
 id = "window"
 version = "1.0.0-SNAPSHOT"
-srcDirs = ["$dir/main/kotlin"]
-resDirs = ["$dir/main/assets"]
-entryPoint = "marx.MainKt"
 
+#Everything related to the build process goes here.
 [build]
 #The repositories to be mapped to the module.
 #By default this already includes mavenCentral.
-repos = [
-    "https://nexus.devsrsouza.com.br/repository/maven-public/"
-]
+repos = ["$repos"]
 
 #Imports local projects. Use urns here
-modules = [
-    "mod:engine/",
-]
+modules = ["mod:engine/"]
 #A platform is something that allows the speicfication of a single version number,
 #thus allowing child jars to drop the version number off the end. They must match
 #the group tag
-platforms = [
-    "$lwjgl_bom"
-]
+platforms = ["$lwjgl_bom"]
 
 implements = [
     "$lwjgl",
@@ -39,3 +31,14 @@ implements = [
 runtimes = [
     "$lwjgl_native"
 ]
+
+
+#This provides the directories for the main source set.
+[build.main]
+sources = ["$dir/main/kotlin"]
+assets = ["$dir/main/assets"]
+
+#This provides the directories for the test source set..
+[build.test]
+sources = ["$dir/test/kotlin"]
+assets = ["$dir/test/assets"]

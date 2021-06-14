@@ -1,5 +1,6 @@
 package marx.engine.render
 
+import marx.engine.math.*
 import marx.engine.render.camera.*
 import marx.engine.render.scene.*
 
@@ -7,7 +8,10 @@ import marx.engine.render.scene.*
  * This is the core of all of the rendering done throughout the engine.
  * It's purpose is to provide a platform agnostic rendering subset of tools.
  */
-abstract class RenderAPI(val command: RenderCommand, val scene: RenderScene) {
+abstract class RenderAPI(
+    val command: RenderCommand,
+    val scene: RenderScene
+) {
 
     init {
         this.register()
@@ -44,7 +48,17 @@ abstract class RenderAPI(val command: RenderCommand, val scene: RenderScene) {
             /**
              * This method should be overloaded for all of the various types of things we can submit
              */
-            override fun submit(array: VertexArray, shader: Shader) = Unit
+            override fun submit(
+                array: VertexArray,
+                shader: Shader,
+                transform: Transform
+            ) {
+
+            }
+
+            /**
+             * This method should be overloaded for all of the various types of things we flush
+             */
             override fun flush() = Unit
             override fun endScene() = Unit
         }) {

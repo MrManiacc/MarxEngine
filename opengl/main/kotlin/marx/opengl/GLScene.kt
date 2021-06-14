@@ -1,10 +1,10 @@
-package marx.opengl.scene
+package marx.opengl
 
 import com.google.common.collect.*
+import marx.engine.math.*
 import marx.engine.render.*
 import marx.engine.render.camera.*
 import marx.engine.render.scene.*
-import java.util.*
 import kotlin.reflect.*
 
 /**
@@ -41,11 +41,12 @@ class GLScene<API : RenderAPI>(
     /**
      * This method should be overloaded for all of the various types of things we can submit
      */
-    override fun submit(array: VertexArray, shader: Shader) {
+    override fun submit(array: VertexArray, shader: Shader, transform: Transform) {
         drawCalls.add {
             shader.bind()
             array.bind()
             camera?.viewProjection?.let { viewProjection -> shader.uploadMat4("u_ViewProjection", viewProjection) }
+            shader.uploadMat4("u_ModelMatrix", transform.matrix)
             renderAPI.drawIndexed(array)
             array.unbind()
             shader.unbind()

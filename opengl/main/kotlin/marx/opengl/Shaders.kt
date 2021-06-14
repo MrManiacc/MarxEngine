@@ -21,11 +21,12 @@ object Shaders {
                 layout(location = 0) in vec3 a_Pos; //Imports the position in 3d space (relative to mesh origin) of this vertex.
                 
                 uniform mat4 u_ViewProjection; //Calculations done on cpu side
+                uniform mat4 u_ModelMatrix;
                 
                 out vec3 v_Pos;
                 
                 void main(){
-                    gl_Position = u_ViewProjection * vec4(a_Pos, 1.0);                    
+                    gl_Position = u_ViewProjection * u_ModelMatrix * vec4(a_Pos, 1.0);                    
                     v_Pos = a_Pos;         
                 }
             """.trimIndent()
@@ -55,11 +56,12 @@ object Shaders {
                 layout(location = 0) in vec3 a_Pos; //Imports the position in 3d space (relative to mesh origin) of this vertex.
                 
                 uniform mat4 u_ViewProjection; //Calculations done on cpu side
+                uniform mat4 u_ModelMatrix;
                 
                 out vec3 v_Pos;
                 
                 void main(){
-                    gl_Position = u_ViewProjection * vec4(a_Pos, 1.0);                    
+                    gl_Position = u_ViewProjection * u_ModelMatrix * vec4(a_Pos, 1.0);                    
                     v_Pos = a_Pos;         
                 }
             """.trimIndent()

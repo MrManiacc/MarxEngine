@@ -7,7 +7,6 @@ import marx.editor.camera.*
 import marx.editor.layer.*
 import marx.editor.wrapper.*
 import marx.engine.*
-import marx.engine.events.*
 import marx.engine.events.Events.Input.KeyPress
 import marx.engine.events.Events.Window
 import marx.engine.events.Events.Window.Initialized
@@ -18,7 +17,6 @@ import marx.engine.render.camera.*
 import marx.engine.render.scene.*
 import marx.engine.window.*
 import marx.opengl.*
-import marx.opengl.scene.*
 import marx.sandbox.layer.*
 import marx.window.*
 import mu.*
@@ -40,8 +38,7 @@ object Sandbox : Application<GLRenderAPI> {
     override var insertIndex: Int = 0
 
     /**==================Scene==================**/
-
-    val editorCamera: Camera<OrthographicCamera> = OrthographicCamera(-1.6f, 1.6f, -0.9f, 0.9f)
+    val editorCamera: Camera<OrthographicCamera> = OrthographicCamera(-1.6f, 1.6f, -0.9f, 0.9f, 1.0f)
     val debugScene: RenderScene = GLScene(DebugRenderAPI::class)
     val gameCamera: Camera<OrthographicCamera> get() = editorCamera //TODO make game camera
     override val scene: RenderScene = GLScene(GLRenderAPI::class)
@@ -58,6 +55,8 @@ object Sandbox : Application<GLRenderAPI> {
      * would be subscribed here
      */
     init {
+        subscribe(editorCamera)
+        subscribe(gameCamera)
         subscribe(debugAPI)
         subscribe(window)
         subscribe(this)

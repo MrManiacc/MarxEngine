@@ -1,9 +1,8 @@
 package marx.engine.layer
 
-import dorkbox.messageBus.annotations.*
 import marx.engine.*
 import marx.engine.events.*
-import marx.engine.events.Events.App.Update
+import marx.engine.events.Events.App.Timestep
 import marx.engine.render.*
 import marx.engine.render.scene.*
 import kotlin.reflect.*
@@ -17,7 +16,7 @@ abstract class Layer<API : RenderAPI>(val app: Application<*>, private val rende
     val scene: RenderScene get() = renderAPI.scene
     open fun onAttach() = Unit
     open fun onDetach() = Unit
-    abstract fun onUpdate(update: Update)
-    abstract fun onEvent(event: Event)
+    abstract fun onUpdate(update: Timestep)
+    open fun onEvent(event: Event){}
 
 }

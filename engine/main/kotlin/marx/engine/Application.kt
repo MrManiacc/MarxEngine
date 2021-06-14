@@ -4,7 +4,7 @@ import dorkbox.messageBus.*
 import dorkbox.messageBus.annotations.*
 import marx.engine.events.*
 import marx.engine.events.Events.App.Initialized
-import marx.engine.events.Events.App.Update
+import marx.engine.events.Events.App.Timestep
 import marx.engine.events.Events.Window
 import marx.engine.events.Events.Window.Resize
 import marx.engine.input.*
@@ -24,10 +24,11 @@ interface Application<API : RenderAPI> : IBus, LayerStack {
     var isRunning: Boolean
     var gameTime: Double
     var startTime: Long
-    val currentTime: Long get() = System.currentTimeMillis()
+    val currentTime: Long get() = System.nanoTime()
 
     /**This will get the render api for the specified [rendererType]**/
     val renderAPI: API
+
     /**This is the root scene for the application**/
     val scene: RenderScene
 
@@ -56,12 +57,11 @@ interface Application<API : RenderAPI> : IBus, LayerStack {
     /**
      * Called upon updating of the game
      */
-    fun onUpdate(event: Update) {
+    fun onUpdate(event: Timestep) {
         for (layerId in size - 1 downTo 0) {
             val layer = layers[layerId]
             layer.onUpdate(event)
         }
-
         renderAPI.command.swap()
         renderAPI.command.poll()
     }
@@ -91,15 +91,14 @@ interface Application<API : RenderAPI> : IBus, LayerStack {
     fun update() {
         while (isRunning && !window.shouldClose) {
             renderAPI.command.clear(floatArrayOf(0.1f, 0.1f, 0.1f))
-
             val now = currentTime
-            val delta = (now - startTime) / 1000.0
+            val delta = (now - startTime) / 1E9
             gameTime += delta
             startTime = now
-            updateEvent.gameTime = gameTime
-            updateEvent.deltaTime = delta
-            onUpdate(updateEvent) //Called before the global event
-            publish(updateEvent)
+            timestep.gameTime = gameTime.toFloat()
+            timestep.deltaTime = delta.toFloat()
+            onUpdate(timestep) //Called before the global event
+            publish(timestep)
         }
     }
 
@@ -115,7 +114,7 @@ interface Application<API : RenderAPI> : IBus, LayerStack {
     override fun shutdown() = eventbus.shutdown()
 
     companion object {
-        private val updateEvent: Update = Update(0.1, 1.0)
+        private val timestep: Timestep = Timestep(0.1f, 1.0f)
         lateinit var instance: Application<*>
     }
 

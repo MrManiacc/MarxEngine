@@ -9,9 +9,6 @@ logger_version = "2.0.8"
 [main]
 id = "editor"
 version = "1.0.0-SNAPSHOT"
-srcDirs = ["$dir/main/kotlin"]
-resDirs = ["$dir/main/assets"]
-entryPoint = "marx.MainKt"
 
 [build]
 repos = ["https://nexus.devsrsouza.com.br/repository/maven-public/"]
@@ -37,3 +34,14 @@ implements = [
 
 #The depencies that are to be sent to the runtime configuration. Useful for c++ binaries
 runtimes = ["$lwjgl_native", "$imgui_native"]
+
+
+#This provides the directories for the main source set.
+[build.main]
+sources = ["$dir/main/kotlin"]
+assets = ["$dir/main/assets"]
+
+#This provides the directories for the test source set..
+[build.test]
+sources = ["$dir/test/kotlin"]
+assets = ["$dir/test/assets"]

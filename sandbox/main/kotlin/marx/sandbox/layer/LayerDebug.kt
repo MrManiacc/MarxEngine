@@ -1,15 +1,19 @@
 package marx.sandbox.layer
 
 import imgui.*
+import imgui.flag.*
 import imgui.flag.ImGuiWindowFlags.*
 import marx.editor.wrapper.*
 import marx.engine.*
 import marx.engine.events.*
-import marx.engine.events.Events.App.Update
+import marx.engine.events.Events.App.Timestep
 import marx.engine.events.Events.Input.KeyPress
 import marx.engine.events.Events.Shader.*
 import marx.engine.layer.*
+import marx.engine.math.*
+import marx.engine.math.vectors.*
 import marx.engine.render.*
+import marx.engine.utils.StringUtils.format
 import marx.opengl.*
 import marx.opengl.GLBuffer.GLIndexBuffer
 import marx.opengl.GLBuffer.GLVertexBuffer
@@ -18,8 +22,6 @@ import mu.*
 import org.joml.*
 import org.lwjgl.glfw.GLFW.*
 import org.slf4j.*
-import kotlin.math.*
-import kotlin.time.*
 
 /**
  * This layer is used for debugging purposes
@@ -28,6 +30,8 @@ class LayerDebug(app: Application<*>) : Layer<DebugRenderAPI>(app, DebugRenderAP
     private val log: Logger = KotlinLogging.logger { }
     private val simpleShader = GLShader(app)
     private val editorShader = GLShader(app)
+    private val transformOne = Transform(Vec3(0f, 0f, 0f), Vec3(), Vec3(1f))
+    private val transformTwo = Transform(Vec3(), Vec3(), Vec3(1))
 
     /**This creates a quad of size 0.5**/
     val quadVAO: VertexArray = GLVertexArray().apply {
@@ -81,18 +85,24 @@ class LayerDebug(app: Application<*>) : Layer<DebugRenderAPI>(app, DebugRenderAP
     /**
      * This will draw every frame
      */
-    override fun onUpdate(update: Update) {
-        if (app.input.isKeyDown(GLFW_KEY_LEFT))
-            Sandbox.editorCamera.move(floatArrayOf(0.5f * update.deltaTime.toFloat(), 0f))
-        if (app.input.isKeyDown(GLFW_KEY_RIGHT))
-            Sandbox.editorCamera.move(floatArrayOf(-0.5f * update.deltaTime.toFloat(), 0f))
-        if (app.input.isKeyDown(GLFW_KEY_DOWN))
-            Sandbox.editorCamera.move(floatArrayOf(0f, 0.5f * update.deltaTime.toFloat()))
-        if (app.input.isKeyDown(GLFW_KEY_UP))
-            Sandbox.editorCamera.move(floatArrayOf(0f, -0.5f * update.deltaTime.toFloat()))
-
+    override fun onUpdate(time: Timestep) {
+        updateCamera(time)
         drawScene()
-        renderAPI.frame { drawGui(update) }
+        renderAPI.frame { drawGui(time) }
+    }
+
+    private fun updateCamera(time: Timestep) = with(Sandbox.editorCamera) {
+        val speed = 1.75f
+
+        if (app.input.isKeyDown(GLFW_KEY_A))
+            this offX (speed * time.deltaTime)
+        else if (app.input.isKeyDown(GLFW_KEY_D))
+            this offX (speed * time.deltaTime) * -1
+        if (app.input.isKeyDown(GLFW_KEY_W))
+            this offY (speed * time.deltaTime) * -1
+        else if (app.input.isKeyDown(GLFW_KEY_S))
+            this offY (speed * time.deltaTime)
+        else Unit
     }
 
     /**
@@ -100,32 +110,47 @@ class LayerDebug(app: Application<*>) : Layer<DebugRenderAPI>(app, DebugRenderAP
      */
     private fun drawScene() {
         scene.sceneOf(Sandbox.editorCamera) {
-            submit(quadVAO, simpleShader)
-            submit(triangleVAO, editorShader)
+            submit(quadVAO, simpleShader, transformOne)
+            submit(triangleVAO, editorShader, transformTwo)
         }
     }
 
     /**
      * This is called inside the render frame of imgui. It's an overlay so it should be last.
      */
-    @OptIn(ExperimentalTime::class)
-    private fun drawGui(update: Update) {
-        val pos = app.window.pos
+    private fun drawGui(update: Timestep) {
+        val winPos = app.window.pos
         val size = app.window.size
-        val width = 140f
-        val height = 80f
-        val xInset = 30f
-        val yInset = 30f
-        //        ImGui.pushStyleVar(ImGuiStyleVar.WindowPadding, 10f, 10f)
-        ImGui.setNextWindowSize(width, height)
-        ImGui.setNextWindowPos(pos.first + size.first - (xInset + width), pos.second + yInset)
-        if (ImGui.begin("metrics", NoInputs or NoResize or NoScrollbar or NoScrollWithMouse or NoCollapse)) {
-            ImGui.text("game time: ${update.gameTime.seconds.absoluteValue}")
-            ImGui.text("delta: ${update.deltaTime.seconds.inMilliseconds}")
-            ImGui.text("fps: ${ImGui.getIO().framerate.roundToInt()}")
+        val xInset = 200f
+        var position: ImVec2? = null
+        var scale: ImVec2? = null
+        val metricsWidth = 115f
+        val statesWidth = 175f
+
+        ImGui.setNextWindowSize(metricsWidth, 0f, ImGuiCond.Always)
+        ImGui.setNextWindowPos(winPos.first + size.first - xInset, winPos.second + 20f, ImGuiCond.Once)
+        if (ImGui.begin("metrics", NoResize or NoScrollbar or NoScrollWithMouse or NoCollapse or NoDocking)) {
+            ImGui.text("delta: " + update.deltaTime.format(5))
+            ImGui.text("time: ${update.gameTime.format(3)}")
+            ImGui.text("ms: " + update.milliseconds.format(3))
+            ImGui.text("fps: ${ImGui.getIO().framerate.format(1)}")
+            position = ImGui.getWindowPos()
+            scale = ImGui.getWindowSize()
         }
         ImGui.end()
-
+        scale?.let { size ->
+            position?.let { pos ->
+                ImGui.setNextWindowSize(statesWidth, 0f, ImGuiCond.Always)
+                ImGui.setNextWindowPos(pos.x - (statesWidth - metricsWidth), pos.y + size.y + 10, ImGuiCond.Always)
+                if (ImGui.begin("states", NoResize or NoScrollbar or NoScrollWithMouse or NoCollapse or NoDocking)) {
+                    ImGui.text("fullscreen[f1]: ${app.window.fullscreen}")
+                    ImGui.text("vsync [f3]: ${app.window.vsync}")
+                    val frame = app.window.size
+                    ImGui.text("window size: ${frame.first}, ${frame.second}")
+                }
+                ImGui.end()
+            }
+        }
     }
 
     override fun onEvent(event: Event) {
