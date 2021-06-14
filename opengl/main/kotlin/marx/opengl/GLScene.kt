@@ -1,73 +1,69 @@
 package marx.opengl
 
-import com.google.common.collect.*
 import marx.engine.math.*
 import marx.engine.render.*
 import marx.engine.render.camera.*
 import marx.engine.render.scene.*
 import kotlin.reflect.*
 
-/*
+/**
  * This controls an editor's scene.
  */
 class GLScene<API : RenderAPI>(
     private val apiType: KClass<API>
 ) : RenderScene {
-    private var camera: Camera<*>? = null
     override val renderAPI: RenderAPI get() = Renderer(apiType)
-    private var shader: Shader? = null
-    private val drawCalls: MutableList<() -> VertexArray> = Lists.newArrayList()
+    override lateinit var camera: Camera<*>
 
-    /*
-   NumberThis will start a new scene
-     */
-    override fun beginScene(camera: Camera<*>) {
-        this.camera = camera
-        drawCalls.clear()
-    }
+    /*This will start a new scene*/
+    override fun beginScene(camera: Camera<*>) = Unit
 
-    /*
-   NumberThis method should be overloaded for all of the various types of things we can submit
-     */
+    /*This method should be overloaded for all of the various types of things we can submit*/
     override fun submit(array: VertexArray) {
-        drawCalls.add {
-            array.bind()
-            renderAPI.drawIndexed(array)
-            array.unbind()
-            array
-        }
+        array.bind()
+        renderAPI.drawIndexed(array)
+        array.unbind()
     }
 
-    /*
-   NumberThis method should be overloaded for all of the various types of things we can submit
-     */
-    override fun submit(array: VertexArray, shader: Shader, transform: Transform) {
-        drawCalls.add {
-            shader.bind()
-            array.bind()
-            camera?.viewProjection?.let { viewProjection -> shader.uploadMat4("u_ViewProjection", viewProjection) }
-            shader.uploadMat4("u_ModelMatrix", transform.matrix)
-            renderAPI.drawIndexed(array)
-            array.unbind()
-            shader.unbind()
-            array
-        }
+    /*This method should be overloaded for all of the various types of things we can submit*/
+    override fun submit(
+        array: VertexArray,
+        shader: Shader,
+        transform: Transform,
+    ) {
+        shader.bind()
+        array.bind()
+        shader.uploadMat4("u_ViewProjection", camera.viewProjection)
+        shader.uploadMat4("u_ModelMatrix", transform.matrix)
+        renderAPI.drawIndexed(array)
+        array.unbind()
+        shader.unbind()
     }
 
-    /*
-   NumberThis clears our all of objects or entities on the scene
-     */
-    override fun flush() {
-        shader = null
-        camera = null
-        drawCalls.clear()
+    /*This method should be overloaded for all of the various types of things we can submit*/
+    override fun submit(
+        array: VertexArray,
+        shaderIn: Shader,
+        transformIn: Transform,
+        preDraw: RenderScene.(Shader, Transform) -> Unit,
+        postDraw: RenderScene.(Shader, Transform) -> Unit
+    ) {
+        shaderIn.bind()
+        array.bind()
+        shaderIn.uploadMat4("u_ViewProjection", camera.viewProjection)
+        preDraw(shaderIn, transformIn)
+        renderAPI.drawIndexed(array)
+        postDraw(shaderIn, transformIn)
+        array.unbind()
+        shaderIn.unbind()
     }
 
-    /*
-   NumberEnds the current scene, renders all of the submitted meshes
-     */
+    /*This clears our all of objects or entities on the scene*/
+    override fun flush() = Unit
+
+    /*NumberEnds the current scene, renders all of the submitted meshes*/
     override fun endScene() {
-        drawCalls.forEach { it() }
+        //TODO: render the scene here using a render-queue/render-command system.
     }
 
     override fun equals(other: Any?): Boolean {

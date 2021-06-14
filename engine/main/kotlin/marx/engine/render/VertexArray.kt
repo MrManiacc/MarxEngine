@@ -30,12 +30,12 @@ abstract class VertexArray {
     abstract fun unbind()
 
     /*
-   NumberThis is used to dispose of the vertex array after we're done with it
+   This is used to dispose of the vertex array after we're done with it
      */
     abstract fun dispose()
 
     /*
-   NumberThis should get the first given buffer class type
+   This should get the first given buffer class type
      */
     @Suppress("UNCHECKED_CAST")
     operator fun <T : Buffer> get(type: KClass<T>): T {
@@ -47,7 +47,7 @@ abstract class VertexArray {
     }
 
     /*
-   NumberThis will add the give buffer. It can either be a [VertexBuffer] or a [IndexBuffer]
+   This will add the give buffer. It can either be a [VertexBuffer] or a [IndexBuffer]
      */
     fun <T : Buffer> addBuffer(buffer: T) =
         if (VertexBuffer::class.isInstance(buffer))
@@ -67,7 +67,7 @@ abstract class VertexArray {
     protected abstract fun <T : VertexBuffer> addVertexBuffer(vertexBuffer: T)
 
     /*
-   NumberThis allows for the use of drawing faced with indexes which reduces the render overhead
+   This allows for the use of drawing faced with indexes which reduces the render overhead
      */
     protected abstract fun <T : IndexBuffer> addIndexBuffer(indexBuffer: T)
 

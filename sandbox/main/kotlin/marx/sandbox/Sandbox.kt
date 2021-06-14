@@ -50,7 +50,7 @@ object Sandbox : Application<GLRenderAPI> {
     private val debugLayer: Layer<DebugRenderAPI> = LayerDebug(this)
     private val simulateLayer: Layer<GLRenderAPI> = LayerSimulate(this)
 
-    /*NumberWe must subscribe anything important here. In the future any entity systems number would be subscribed here*/
+    /*We must subscribe anything important here. In the future any entity systems number would be subscribed here*/
     init {
         subscribe(editorCamera)
         subscribe(gameCamera)
@@ -59,14 +59,14 @@ object Sandbox : Application<GLRenderAPI> {
         subscribe(this)
     }
 
-    /*NumberThis is used to initialized our layers*/
+    /*This is used to initialized our layers*/
     @Subscribe fun onGLInitialized(event: Initialized) {
         pushLayer(debugLayer)
     }
 
 
 
-    /*Number This maps the layer's accordingly*/
+    /* This maps the layer's accordingly*/
     @Subscribe fun onKeyPressed(event: KeyPress) {
         when (event.key) {
             GLFW_KEY_KP_0 -> {
@@ -93,7 +93,7 @@ object Sandbox : Application<GLRenderAPI> {
         }
     }
 
-    /*Number Called upon the window closing, we pass on the destroy event the various APIS*/
+    /* Called upon the window closing, we pass on the destroy event the various APIS*/
     @Subscribe override fun destroy(event: Window.Destroy) {
         super.destroy(event)
         debugAPI.dispose()

@@ -19,7 +19,7 @@ class GLShader(val app: Application<*>) : Shader() {
     private val mat3Buffer: FloatArray = FloatArray(3 * 3)
 
     /*
-   NumberThis should compile the shader.
+   This should compile the shader.
      */
     override fun compile(sources: ShaderProgram): Boolean {
         val shaders = sources.sources
@@ -100,7 +100,7 @@ class GLShader(val app: Application<*>) : Shader() {
     }
 
     /*
-   NumberThis should destroy the shader program. Called upon closing of a layer or the window/app
+   This should destroy the shader program. Called upon closing of a layer or the window/app
      */
     override fun destroy() {
         glDeleteProgram(shaderProgram)
@@ -129,7 +129,7 @@ class GLShader(val app: Application<*>) : Shader() {
     }
 
     /*This should update a vec3 to the shader**/
-    override fun updateVec3(uniform: String, vector: Vector3f) {
+    override fun uploadVec3(uniform: String, vector: Vector3f) {
         val location = glGetUniformLocation(shaderProgram, uniform)
         glUniform3f(location, vector.x, vector.y, vector.z)
     }

@@ -58,17 +58,17 @@ class LayerSimulate(app: Application<*>) : Layer<GLRenderAPI>(app, GLRenderAPI::
     }
 
     /*
-   NumberThis is called upon the layer being presented.
+   This is called upon the layer being presented.
      */
     override fun onAttach() {
         renderAPI.init()
         quadVAO.create()
         triangleVAO.create()
-        if (shader.compile(Shaders.simple)) log.warn("Successfully compiled shader: ${shader::class.qualifiedName}")
+        if (shader.compile(Shaders.flatShader())) log.warn("Successfully compiled shader: ${shader::class.qualifiedName}")
     }
 
     /*
-   NumberThis will draw every frame
+   This will draw every frame
      */
     override fun onUpdate(update: Timestep) {
         shader.bind()
@@ -85,7 +85,7 @@ class LayerSimulate(app: Application<*>) : Layer<GLRenderAPI>(app, GLRenderAPI::
         else if (event is KeyPress) {
             if (event.key == GLFW_KEY_R) { //Reload the shader
                 shader.destroy()
-                shader.compile(Shaders.simple)
+                shader.compile(Shaders.flatShader())
                 log.info("Reloaded shader: $shader")
             }
         }

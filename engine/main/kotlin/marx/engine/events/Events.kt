@@ -31,7 +31,7 @@ object Events {
     }
 
     /*
-   NumberThis stores all of our window events
+   This stores all of our window events
      */
     object Window {
         data class Initialized(val window: IWindow) : Event()
@@ -46,11 +46,11 @@ object Events {
     }
 
     /*
-   NumberThis stores all of our app lifecycle events
+   This stores all of our app lifecycle events
      */
     object App {
         /*
-       NumberThis is used to pass the current timestep.
+       This is used to pass the current timestep.
          */
         data class Timestep(
             var deltaTime: Float,

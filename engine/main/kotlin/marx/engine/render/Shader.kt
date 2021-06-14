@@ -10,7 +10,7 @@ abstract class Shader {
     abstract val isValid: Boolean
 
     /*
-   NumberThis should compile the shader.
+   This should compile the shader.
      */
     abstract fun compile(sources: ShaderProgram): Boolean
 
@@ -27,7 +27,7 @@ abstract class Shader {
         compile(ShaderProgram(arrayListOf(sources.first, sources.second)))
 
     /*
-   NumberThis should destroy the shader program. Called upon closing of a layer or the window/app
+   This should destroy the shader program. Called upon closing of a layer or the window/app
      */
     abstract fun destroy()
 
@@ -45,7 +45,7 @@ abstract class Shader {
     abstract fun updateVec4(uniform: String, vector: Vector4f)
 
     /*This should update a vec3 to the shader**/
-    abstract fun updateVec3(uniform: String, vector: Vector3f)
+    abstract fun uploadVec3(uniform: String, vector: Vector3f)
 
     /*This should update a vec2 to the shader**/
     abstract fun updateVec2(uniform: String, vector: Vector2f)
@@ -60,7 +60,7 @@ abstract class Shader {
     abstract fun uploadMat3(uniform: String, matrix: Matrix3f)
 
     /*
-   NumberThis is a class that wraps shader's source code with an enum of their type,
+   This is a class that wraps shader's source code with an enum of their type,
    Numberand the source code it's self.
      */
     data class ShaderSource(
@@ -81,7 +81,7 @@ abstract class Shader {
     }
 
     /*
-   NumberThis is the result of a shader compilation process
+   This is the result of a shader compilation process
      */
     data class CompileResult(
         val type: Type = Type.Vertex,

@@ -12,11 +12,11 @@ import org.joml.*
  * This root of a camera.
  */
 abstract class Camera<C>(
-    val position: Vec3 = Vec3(),
-    val rotation: Vec3 = Vec3(),
+    position: Vec3 = Vec3(),
+    rotation: Vec3 = Vec3(),
     var moveSpeed: Float = 1f,
     var lookSpeed: Float = 100f
-) : IVec<Camera<C>> {
+) : Transform(position, rotation, Vec3()) {
     abstract var projectionMatrix: Matrix4f
         protected set
 
@@ -90,64 +90,9 @@ abstract class Camera<C>(
         return this
     }
 
-    infix fun setX(other: Number): Camera<C> {
-        this.position.x = other.toFloat()
-        return this
-    }
-
-    infix fun setY(other: Number): Camera<C> {
-        this.position.y = other.toFloat()
-        return this
-    }
-
-    infix fun setZ(other: Number): Camera<C> {
-        this.position.z = other.toFloat()
-        return this
-    }
-
-    infix fun x(other: Number): Camera<C> {
-        this.position.x += other.toFloat()
-        return this
-    }
-
-    infix fun y(other: Number): Camera<C> {
-        this.position.y += other.toFloat()
-        return this
-    }
-
-    infix fun z(other: Number): Camera<C> {
-        this.position.z += other.toFloat()
-        return this
-    }
-
-    infix fun setPitch(other: Number): Camera<C> {
-        this.rotation.x = other.toFloat()
-        return this
-    }
-
-    infix fun setYaw(other: Number): Camera<C> {
-        this.rotation.y = other.toFloat()
-        return this
-    }
-
-    infix fun setRoll(other: Number): Camera<C> {
-        this.rotation.z = other.toFloat()
-        return this
-    }
-
-    infix fun pitch(other: Number): Camera<C> {
-        this.rotation.x += other.toFloat()
-        return this
-    }
-
-    infix fun yaw(other: Number): Camera<C> {
-        this.rotation.y += other.toFloat()
-        return this
-    }
-
-    infix fun roll(other: Number): Camera<C> {
-        this.rotation.z += other.toFloat()
-        return this
+    class Null : Camera<Null>() {
+        override var projectionMatrix: Matrix4f = Matrix4f()
+        override val viewMatrix: Matrix4f = Matrix4f()
     }
 
     override fun toString(): String =

@@ -23,7 +23,7 @@ interface RenderCommand {
     fun poll() = Unit
 
     /*
-   NumberThis clear flags for clearing the screen
+   This clear flags for clearing the screen
      */
     enum class ClearFlags {
         COLOR, DEPTH, COLOR_DEPTH

@@ -67,7 +67,7 @@ class Vec4 : Vector4f, IVec<Vec4> {
     override fun <V : IVec<*>> minus(other: V): Vec4 =
         Vec4(this.x - other[X, 0f], this.y - other[Y, 0f], this.z - other[Z, 0f], this.w - other[W, 0f])
 
-    /*NumberThis should divide this vector [SELF] by the other vector [V]*/
+    /*This should divide this vector [SELF] by the other vector [V]*/
     override fun <V : IVec<*>> div(other: V): Vec4 =
         Vec4(this.x / other[X, 1f], this.y / other[Y, 1f], this.z / other[Z, 1f], this.w / other[W, 1f])
 

@@ -12,6 +12,8 @@ import marx.engine.events.Events.Input.KeyPress
 import marx.engine.events.Events.Shader.*
 import marx.engine.layer.*
 import marx.engine.math.*
+import marx.engine.math.MathDSL.Conversions.rads3
+import marx.engine.math.MathDSL.Extensions.by
 import marx.engine.math.MathDSL.Extensions.via
 import marx.engine.render.*
 import marx.engine.utils.StringUtils.format
@@ -27,10 +29,15 @@ import org.slf4j.*
 /*This layer is used for debugging purpose*/
 class LayerDebug(app: Application<*>) : Layer<DebugRenderAPI>(app, DebugRenderAPI::class, "debug-layer") {
     private val log: Logger = KotlinLogging.logger { }
-    private val simpleShader = GLShader(app)
+    private val rand: Random = Random(69420)
+    private val flatShader = GLShader(app)
     private val editorShader = GLShader(app)
-    private val transformOne = Transform(Vec3(0f, 0f, 0f), 0f via 0f via 90f, Vec3(1f))
-    private val transformTwo = Transform(Vec3(10f), Vec3(0, 0, 90), Vec3(1))
+    private val transform = Transform(Vec3(0f, 0f, 0f), 0f via 0f via 0f, Vec3(1f))
+    private val transformBuffer = Transform(Vec3(0f, 0f, 0f), 0f via 0f via 0f, Vec3(1f))
+    private var colorOne = rand.nextFloat() by rand.nextFloat() by rand.nextFloat()
+    private var colorTwo = colorOne.z by rand.nextFloat() by rand.nextFloat()
+    private var colorThree = rand.nextFloat() by rand.nextFloat() by colorTwo.y
+    private var colorFour = rand.nextFloat() by colorOne.x by rand.nextFloat()
 
     /*This creates a quad of size 0.5*/
     val quadVAO: VertexArray = GLVertexArray().apply {
@@ -55,9 +62,9 @@ class LayerDebug(app: Application<*>) : Layer<DebugRenderAPI>(app, DebugRenderAP
     val triangleVAO: VertexArray = GLVertexArray().apply {
         this += GLVertexBuffer(
             floatArrayOf(
-                -0.33f, -0.5f, 0.0f,  // bottom left
-                0.0f, 0.33f, 0.0f, // top left
-                0.33f, -0.5f, 0.0f,  // bottom right
+                -0.5f, -0.5f, 0.0f,  // bottom left
+                0.5f, -0.5f, 0.0f,  // bottom right
+                0.0f, 0.5f, 0.0f, // top center
             ), 3
         )
 
@@ -68,55 +75,78 @@ class LayerDebug(app: Application<*>) : Layer<DebugRenderAPI>(app, DebugRenderAP
         )
     }
 
-    /*NumberThis is called upon the layer being presented.*/
+    /*This is called upon the layer being presented.*/
     override fun onAttach() {
         renderAPI.init()
         quadVAO.create()
         triangleVAO.create()
-        if (simpleShader.compile(Shaders.simple)) log.warn("Successfully compiled simple shader: ${simpleShader::class.qualifiedName}")
-        if (editorShader.compile(Shaders.colored(version = "330", core = true, color = Vector3f(0.8f, 0.232f, 0.323f)))) log.warn(
+        if (flatShader.compile(Shaders.flatShader())) log.warn("Successfully compiled simple shader: ${flatShader::class.qualifiedName}")
+        if (editorShader.compile(Shaders.simple())) log.warn(
             "Successfully compiled editor shader: ${editorShader::class.qualifiedName}"
         )
     }
 
-    /*NumberThis will draw every frame*/
+    /*This will draw every frame*/
     override fun onUpdate(time: Timestep) {
         updateCamera(time)
         drawScene()
         renderAPI.frame { drawGui(time) }
     }
 
-    /*This updates the camera's positiong using the [time]*/
+    /*This updates the camera's position using the [time]*/
     private fun updateCamera(time: Timestep) = Sandbox.editorCamera.let { cam ->
         val moveSpeed = Sandbox.editorCamera.moveSpeed
         val lookSpeed = Sandbox.editorCamera.lookSpeed
         with(app.input) {
             if (isKeyDown(GLFW_KEY_D))
                 cam x (moveSpeed * time.deltaTime)
-            else if (isKeyDown(GLFW_KEY_A))
+            if (isKeyDown(GLFW_KEY_A))
                 cam x (moveSpeed * time.deltaTime) * -1
             if (isKeyDown(GLFW_KEY_Q))
                 cam roll (lookSpeed * time.deltaTime) * -1
-            else if (isKeyDown(GLFW_KEY_E))
+            if (isKeyDown(GLFW_KEY_E))
                 cam roll (lookSpeed * time.deltaTime)
             if (isKeyDown(GLFW_KEY_S))
                 cam y (moveSpeed * time.deltaTime) * -1
-            else if (isKeyDown(GLFW_KEY_W))
+            if (isKeyDown(GLFW_KEY_W))
                 cam y (moveSpeed * time.deltaTime)
-            else Unit
-
+            if (isKeyDown(GLFW_KEY_RIGHT))
+                transform x (time.deltaTime)
+            if (isKeyDown(GLFW_KEY_LEFT))
+                transform x (time.deltaTime) * -1
+            if (isKeyDown(GLFW_KEY_UP))
+                transform y (time.deltaTime)
+            if (isKeyDown(GLFW_KEY_DOWN))
+                transform y (time.deltaTime) * -1
         }
     }
 
-    /*NumberDraws our test scene*/
+    /*Draws our debug test scene*/
     private fun drawScene() {
         scene.sceneOf(Sandbox.editorCamera) {
-            submit(quadVAO, simpleShader, transformOne)
-            submit(triangleVAO, editorShader, transformTwo)
+            //TODO remove this it's EXPENSIVE!!!
+            for (y in -10..10) {
+                for (x in -10..10) {
+                    submit(quadVAO, flatShader, transformBuffer, { shader, transform ->
+                        shader.uploadMat4(
+                            "u_ModelMatrix", transform.matrix
+                                .identity()
+                                .translate(x * 0.11f by y * 0.11f by 0)
+                                .scale(0.10f)
+                        )
+                        if (x % 2 == 0 && y % 2 != 0) shader.uploadVec3("u_Color", colorOne)
+                        else if (x % 2 == 0 && y % 2 == 0) shader.uploadVec3("u_Color", colorTwo)
+                        else if (x % 2 != 0 && y % 2 == 0) shader.uploadVec3("u_Color", colorThree)
+                        else shader.uploadVec3("u_Color", colorFour)
+                    })
+                }
+            }
+
+            submit(triangleVAO, editorShader, transform)
         }
     }
 
-    /*NumberThis is called inside the render frame of imgui. It's an overlay so it should be last.*/
+    /*This is called inside the render frame of imgui. It's an overlay so it should be last.*/
     private fun drawGui(update: Timestep) {
         val winPos = app.window.pos
         val size = app.window.size
@@ -149,7 +179,7 @@ class LayerDebug(app: Application<*>) : Layer<DebugRenderAPI>(app, DebugRenderAP
         ImGui.setNextWindowSize(statesWidth, 0f, ImGuiCond.Always)
         ImGui.setNextWindowPos(pos.x, pos.y + scale.y + 10, ImGuiCond.Always)
         if (ImGui.begin("transforms", NoResize or NoScrollbar or NoScrollWithMouse or NoCollapse or NoDocking)) {
-            if (MarxGui.transform("transform1", transformOne)) {
+            if (MarxGui.transform("transform1", transform)) {
                 log.warn("Updated transform1")
             }
             pos = ImGui.getWindowPos()
@@ -177,14 +207,20 @@ class LayerDebug(app: Application<*>) : Layer<DebugRenderAPI>(app, DebugRenderAP
         else if (event is KeyPress) {
             if (event.key == GLFW_KEY_R) { //Reload the shader
                 editorShader.destroy()
-                editorShader.compile(Shaders.simple)
-                log.info("Reloaded shader: $editorShader")
+                editorShader.compile(Shaders.simple())
+                flatShader.compile(Shaders.flatShader())
+                colorOne = rand.nextFloat() by rand.nextFloat() by rand.nextFloat()
+                colorTwo = colorOne.z by rand.nextFloat() by rand.nextFloat()
+                colorThree = rand.nextFloat() by rand.nextFloat() by colorTwo.y
+                colorFour = rand.nextFloat() by colorOne.x by rand.nextFloat()
+                log.info("Reloaded shader: $flatShader")
             }
         }
     }
 
     override fun onDetach() {
         editorShader.destroy()
+        flatShader.destroy()
         quadVAO.dispose()
         triangleVAO.dispose()
     }

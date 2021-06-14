@@ -44,7 +44,7 @@ class DebugRenderAPI(
     private var init = false
 
     /*
-   NumberThis will initialize the gui
+   This will initialize the gui
      */
 
     override fun init() {
@@ -58,7 +58,7 @@ class DebugRenderAPI(
     }
 
     /*
-   NumberThis will initialize the imgui stuff
+   This will initialize the imgui stuff
      */
     private fun initImGui() {
         ImGui.createContext();
@@ -74,7 +74,7 @@ class DebugRenderAPI(
     }
 
     /*
-   NumberThis initializes our style.
+   This initializes our style.
      */
     private fun setupStyle(style: ImGuiStyle) {
         style.windowPadding.set(15f, 15f)
@@ -125,7 +125,7 @@ class DebugRenderAPI(
     }
 
     /*
-   NumberThis sets a color for imgui
+   This sets a color for imgui
      */
     private fun setColor(
         colorIndex: Int,
@@ -136,7 +136,7 @@ class DebugRenderAPI(
     }
 
     /*
-   NumberThis will begin the imigui frame
+   This will begin the imigui frame
      */
     private fun startFrame() {
         imGuiGlfw.newFrame();
@@ -144,7 +144,7 @@ class DebugRenderAPI(
     }
 
     /*
-   NumberThis is a magic kotlin wrapper for a frame start with an automatic end.
+   This is a magic kotlin wrapper for a frame start with an automatic end.
      */
     fun frame(frame: () -> Unit) {
         startFrame()
@@ -153,7 +153,7 @@ class DebugRenderAPI(
     }
 
     /*
-   NumberThis will begin and end a node graph
+   This will begin and end a node graph
      */
     fun nodeGraph(
         name: String,
@@ -176,7 +176,7 @@ class DebugRenderAPI(
     }
 
     /*
-   NumberThis will end the imgui frame
+   This will end the imgui frame
      */
     private fun endFrame() {
         ImGui.render();
@@ -190,7 +190,7 @@ class DebugRenderAPI(
     }
 
     /*
-   NumberThis will create the fullscreen dock-space window.
+   This will create the fullscreen dock-space window.
      */
     fun dockspace(
         name: String,
@@ -228,7 +228,7 @@ class DebugRenderAPI(
     }
 
     /*
-   NumberThis internally creates the dock when it's not present.
+   This internally creates the dock when it's not present.
      */
     private fun createDock(name: String) {
         val viewport = ImGui.getWindowViewport()

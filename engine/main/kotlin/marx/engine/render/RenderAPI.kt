@@ -3,6 +3,7 @@ package marx.engine.render
 import marx.engine.math.*
 import marx.engine.render.camera.*
 import marx.engine.render.scene.*
+import org.joml.*
 
 /*
  * This is the core of all of the rendering done throughout the engine.
@@ -25,7 +26,7 @@ abstract class RenderAPI(
     abstract fun drawIndexed(array: VertexArray)
 
     /*
-   NumberThis will register the api with the [Renderer]
+   This will register the api with the [Renderer]
      */
     open fun register() =
         Renderer.set(this::class, this)
@@ -38,15 +39,17 @@ abstract class RenderAPI(
         val Null: RenderAPI = object : RenderAPI(object : RenderCommand {}, object : RenderScene {
             override val renderAPI: RenderAPI
                 get() = Renderer()
+            override var camera: Camera<*> = Camera.Null()
+
 
             /*
-           NumberThis will start a new scene
+           This will start a new scene
              */
             override fun beginScene(camera: Camera<*>) = Unit
             override fun submit(array: VertexArray) = Unit
 
             /*
-           NumberThis method should be overloaded for all of the various types of things we can submit
+           This method should be overloaded for all of the various types of things we can submit
              */
             override fun submit(
                 array: VertexArray,
@@ -56,8 +59,18 @@ abstract class RenderAPI(
 
             }
 
+            override fun submit(
+                array: VertexArray,
+                shaderIn: Shader,
+                transformIn: Transform,
+                preDraw: RenderScene.(Shader, Transform) -> Unit,
+                postDraw: RenderScene.(Shader, Transform) -> Unit
+            ) {
+                TODO("Not yet implemented")
+            }
+
             /*
-           NumberThis method should be overloaded for all of the various types of things we flush
+           This method should be overloaded for all of the various types of things we flush
              */
             override fun flush() = Unit
             override fun endScene() = Unit

@@ -37,7 +37,7 @@ data class GLVertexArray(
     }
 
     /*
-   NumberThis is used to dispose of the vertex array after we're done with it
+   This is used to dispose of the vertex array after we're done with it
      */
     override fun dispose() {
         unbind()
@@ -55,7 +55,7 @@ data class GLVertexArray(
             }
 
     /*
-   NumberThis allows for the use of drawing faced with indexes which reduces the render overhead
+   This allows for the use of drawing faced with indexes which reduces the render overhead
      */
     override fun <T : Buffer.IndexBuffer> addIndexBuffer(indexBuffer: T) =
         indexBuffer.apply { buffers += this }

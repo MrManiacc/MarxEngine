@@ -108,7 +108,7 @@ object MathDSL {
                 )
             }
 
-        /*NumberThis will generate a new angle from this vector*/
+        /*This will generate a new angle from this vector*/
         val IVec<*>.angle4: Angle4
             get() = if (this is Angle4) this
             else Angle4(
@@ -126,36 +126,36 @@ object MathDSL {
         val IVec<*>.transform: Transform get() = if (this is Transform) this else Transform(vec3, rot3, scale)
     }
 
-    /*NumberThis stores various inline extensions for the different vectors*/
+    /*This stores various inline extensions for the different vectors*/
     object Extensions {
 
-        /*NumberProvides an extension for creating a vec2 via 2 numbers*/
+        /*Provides an extension for creating a vec2 via 2 numbers*/
         infix fun Number.via(other: Number): Vec2 = Vec2(this, other)
 
-        /*NumberCreates a vec3 from a vec2 with a number*/
+        /*Creates a vec3 from a vec2 with a number*/
         infix fun Vec2.via(other: Number): Vec3 = Vec3(this, other.toFloat())
 
-        /*NumberCreates a vec3 from a vec2 with a number*/
+        /*Creates a vec3 from a vec2 with a number*/
         fun Vec3.via(other: Number): Vec4 = Vec4(this, other.toFloat())
 
         infix fun Number.by(other: Number): Vec2 = Vec2(this, other)
 
-        /*NumberCreates a vec3 from a vec2 with a number*/
+        /*Creates a vec3 from a vec2 with a number*/
         infix fun Vec2.by(other: Number): Vec3 = Vec3(this, other.toFloat())
 
-        /*NumberCreates a vec3 from a vec2 with a number*/
+        /*Creates a vec3 from a vec2 with a number*/
         infix fun Vec3.by(other: Number): Vec4 = Vec4(this, other.toFloat())
 
-        /*NumberThis adds our get refined get method so we can do [IVec<X>]*/
+        /*This adds our get refined get method so we can do [IVec<X>]*/
         inline operator fun <reified COMP : Comp> IVec<*>.get(default: () -> Float) = compOr<COMP>(default)
 
-        /*NumberThis adds our get refined get method so we can do [IVec<X>]*/
+        /*This adds our get refined get method so we can do [IVec<X>]*/
         inline fun <reified COMP : Comp> IVec<*>.comp() = get(COMP::class.objectInstance!!)
 
-        /*NumberThis adds our get refined get method so we can do [IVec<X>]*/
+        /*This adds our get refined get method so we can do [IVec<X>]*/
         inline fun <reified COMP : Comp> IVec<*>.compOr(default: Float) = compOr<COMP> { default }
 
-        /*NumberThis adds our get refined get method so we can do [IVec<X>]*/
+        /*This adds our get refined get method so we can do [IVec<X>]*/
         inline fun <reified COMP : Comp> IVec<*>.compOr(default: () -> Float) = comp<COMP>() ?: default()
 
         /*This wil get a vector fro mthe given float array*/

@@ -81,13 +81,13 @@ class ModuleFile(val project: Project) {
     )
 
     /*
-   NumberThis will take a given file and recursively apply the predicate. This allows for
+   This will take a given file and recursively apply the predicate. This allows for
    Numberrecursive matching of a given predicate
      */
     private fun File.containsRecursive(predicate: Predicate<File>): Boolean = findRecursive(predicate) != null
 
     /*
-   NumberThis will take a given file and recursively apply the predicate. This allows for
+   This will take a given file and recursively apply the predicate. This allows for
    Numberrecursive matching of a given predicate
      */
     private fun File.findRecursive(predicate: Predicate<File>): File? {
@@ -100,7 +100,7 @@ class ModuleFile(val project: Project) {
     }
 
     /*
-   NumberThis will update all of the variables with the correct extensions
+   This will update all of the variables with the correct extensions
      */
     fun map() {
         mapDefaultExtensions()
@@ -147,7 +147,7 @@ class ModuleFile(val project: Project) {
     }
 
     /*
-   NumberThis will put all of our shared values in the global map
+   This will put all of our shared values in the global map
      */
     fun mapGlobals(map: MutableMap<String, String>) {
         for (entry in this.sharedExtensions) {

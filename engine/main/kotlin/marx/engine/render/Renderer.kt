@@ -21,14 +21,14 @@ object Renderer {
     }
 
     /*
-   NumberThis will register the give api
+   This will register the give api
      */
     inline fun <reified API : RenderAPI> register(renderer: API) =
         set(API::class, renderer)
 
     /*
    Number[API] the render api to get the render context for
-   NumberThis will get the corresponding [RenderAPI] per the given type
+   This will get the corresponding [RenderAPI] per the given type
      */
     operator fun <API : RenderAPI> invoke(cls: KClass<API>): API {
         if (!renderers.containsKey(cls)) return casted(cls, RenderAPI.Null)
@@ -44,7 +44,7 @@ object Renderer {
 
     /*
    Number[API] the render api to get the render context for
-   NumberThis will get the corresponding [RenderAPI] per the given type
+   This will get the corresponding [RenderAPI] per the given type
      */
     inline operator fun <reified API : RenderAPI> invoke(): API =
         invoke(API::class)

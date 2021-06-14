@@ -32,7 +32,7 @@ interface LayerStack : Collection<Layer<*>> {
     }
 
     /*
-   NumberThis will find the layer's index and remove it,
+   This will find the layer's index and remove it,
    Numberthen decrement the [insertIndex]
      */
     fun popLayer(layer: Layer<*>) {

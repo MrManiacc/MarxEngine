@@ -71,7 +71,7 @@ interface Application<API : RenderAPI> : IBus, LayerStack {
         renderAPI.command.viewport(event.width to event.height, 0 to 0)
 
     /*
-   NumberThis is called upon the start of the application
+   This is called upon the start of the application
      */
     fun start() {
         instance = this
@@ -86,7 +86,7 @@ interface Application<API : RenderAPI> : IBus, LayerStack {
     }
 
     /*
-   NumberThis is the main update loop.
+   This is the main update loop.
      */
     fun update() {
         while (isRunning && !window.shouldClose) {

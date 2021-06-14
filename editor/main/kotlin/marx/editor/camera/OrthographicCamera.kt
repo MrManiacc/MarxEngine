@@ -14,7 +14,7 @@ class OrthographicCamera(
     right: Float,
     bottom: Float,
     top: Float,
-    var scale: Float = 5f
+    var size: Float = 5f
 ) : Camera<OrthographicCamera>() {
 
     override var projectionMatrix: Matrix4f = Matrix4f().ortho(left, right, bottom, top, -1.0f, 1.0f)
@@ -30,10 +30,10 @@ class OrthographicCamera(
     @Subscribe fun onResize(event: Events.Window.Resize) {
         val aspect = event.width.toFloat() / event.height.toFloat()
         projectionMatrix = projectionMatrix.identity().ortho(
-            -aspect * scale,
-            aspect * scale,
-            -scale,
-            scale,
+            -aspect * size,
+            aspect * size,
+            -size,
+            size,
             1.0f,
             -1.0f
         )

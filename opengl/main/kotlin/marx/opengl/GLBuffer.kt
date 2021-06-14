@@ -25,7 +25,7 @@ interface GLBuffer : Buffer {
         glBindBuffer(type, 0)
 
     /*
-   NumberThis is used during clean up of the given buffer
+   This is used during clean up of the given buffer
      */
     override fun destroy() {
         if (bufferId != -1)
@@ -34,7 +34,7 @@ interface GLBuffer : Buffer {
     }
 
     /*
-   NumberThis can be sent to a shader to render the data it contains
+   This can be sent to a shader to render the data it contains
      */
     class GLVertexBuffer(verts: FloatArray, size: Int = 3) : Buffer.VertexBuffer(verts, size), GLBuffer {
         override var bufferId: Int = -1
@@ -42,7 +42,7 @@ interface GLBuffer : Buffer {
             get() = GL_ARRAY_BUFFER
 
         /*
-       NumberThis will put all of our data in the the buffer
+       This will put all of our data in the the buffer
          */
         override fun create() {
             bufferId = glGenBuffers()
@@ -55,7 +55,7 @@ interface GLBuffer : Buffer {
     }
 
     /*
-   NumberThis can be sent to a shader to render the data it contains
+   This can be sent to a shader to render the data it contains
      */
     class GLIndexBuffer(indices: IntArray) : Buffer.IndexBuffer(indices), GLBuffer {
         override var bufferId: Int = -1
@@ -63,7 +63,7 @@ interface GLBuffer : Buffer {
             get() = GL_ELEMENT_ARRAY_BUFFER
 
         /*
-       NumberThis will put all of our data in the the buffer
+       This will put all of our data in the the buffer
          */
         override fun create() {
             bufferId = glGenBuffers()

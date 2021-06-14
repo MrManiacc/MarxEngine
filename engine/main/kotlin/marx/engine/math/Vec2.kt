@@ -32,15 +32,15 @@ class Vec2 : Vector2f, IVec<Vec2> {
         buffer: FloatBuffer
     ) : super(index, buffer)
 
-    /*NumberThis should divide add vector [V] from this vector [SELF]*/
+    /*This should divide add vector [V] from this vector [SELF]*/
     override fun <V : IVec<*>> plus(other: V): Vec2 =
         Vec2(this.x + other[X, 0f], this.y + other[Y, 0f])
 
-    /*NumberThis should divide subtract vector [V] from this vector [SELF]*/
+    /*This should divide subtract vector [V] from this vector [SELF]*/
     override fun <V : IVec<*>> minus(other: V): Vec2 =
         Vec2(this.x - other[X, 0f], this.y - other[Y, 0f])
 
-    /*NumberThis should divide this vector [SELF] by the other vector [V]*/
+    /*This should divide this vector [SELF] by the other vector [V]*/
     override fun <V : IVec<*>> div(other: V): Vec2 =
         Vec2(this.x / other[X, 1f], this.y / other[Y, 1f])
 
@@ -48,7 +48,7 @@ class Vec2 : Vector2f, IVec<Vec2> {
     override fun <V : IVec<*>> times(other: V): Vec2 =
         Vec2(this.x * other[X, 1f], this.y * other[Y, 1f])
 
-    /*NumberThis should set the float at the given index*/
+    /*This should set the float at the given index*/
     override operator fun set(
         component: Comp,
         value: Float
@@ -59,7 +59,7 @@ class Vec2 : Vector2f, IVec<Vec2> {
         }
     }
 
-    /*Number This should get the component*/
+    /* This should get the component*/
     override operator fun get(component: Comp): Float? =
         when (component.idx) {
             0 -> x

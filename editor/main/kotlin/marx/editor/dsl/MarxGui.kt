@@ -65,7 +65,7 @@ object MarxGui {
             updated = true
         }
         if (ImGui.dragFloat("move speed##$name", moveSpeed, step, 0f, 1000f)) {
-            transform.lookSpeed = lookSpeed[0] / 100.0f
+            transform.moveSpeed = moveSpeed[0] / 100.0f
             updated = true
         }
         if (ImGui.dragFloat("look speed##$name", lookSpeed, step, 0f, 1000f)) {
