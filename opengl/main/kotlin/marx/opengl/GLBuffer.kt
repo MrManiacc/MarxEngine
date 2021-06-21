@@ -13,13 +13,13 @@ interface GLBuffer : Buffer {
     val type: Int
 
     /*
-   NumberBinds the buffer for drawing to the shader
+Binds the buffer for drawing to the shader
      */
     override fun bind() =
         glBindBuffer(type, bufferId)
 
     /*
-   NumberBinds the buffer for drawing to the shader
+Binds the buffer for drawing to the shader
      */
     override fun unbind() =
         glBindBuffer(type, 0)

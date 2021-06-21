@@ -6,7 +6,7 @@ import imgui.flag.*
 import imgui.gl3.*
 import imgui.glfw.*
 import imgui.type.*
-import marx.engine.render.scene.*
+import marx.engine.scene.*
 import marx.engine.utils.MathUtils.orEquals
 import marx.engine.window.*
 import marx.opengl.*

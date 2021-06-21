@@ -1,10 +1,6 @@
 package marx.engine.math
 
-import marx.engine.math.components.*
-
-import marx.engine.math.components.AxisAngle.*
-import marx.engine.math.components.Position.*
-import marx.engine.math.components.Rotation.*
+import marx.engine.comps.Position.*
 import org.joml.*
 import java.nio.*
 import java.text.*

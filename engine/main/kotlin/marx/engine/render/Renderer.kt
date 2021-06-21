@@ -13,7 +13,7 @@ object Renderer {
     val log = KotlinLogging.logger { }
 
     /*
-   Numbersets/registers [API] to the corresponding [context]
+sets/registers [API] to the corresponding [context]
      */
     operator fun set(API: KClass<out RenderAPI>, context: RenderAPI) = context.let {
         renderers[API] = it
@@ -27,7 +27,7 @@ object Renderer {
         set(API::class, renderer)
 
     /*
-   Number[API] the render api to get the render context for
+[API] the render api to get the render context for
    This will get the corresponding [RenderAPI] per the given type
      */
     operator fun <API : RenderAPI> invoke(cls: KClass<API>): API {
@@ -43,7 +43,7 @@ object Renderer {
     inline fun <reified API : RenderAPI> casted(renderAPI: RenderAPI): API = casted(API::class, renderAPI)
 
     /*
-   Number[API] the render api to get the render context for
+[API] the render api to get the render context for
    This will get the corresponding [RenderAPI] per the given type
      */
     inline operator fun <reified API : RenderAPI> invoke(): API =

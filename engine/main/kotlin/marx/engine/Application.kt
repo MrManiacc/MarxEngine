@@ -2,6 +2,7 @@ package marx.engine
 
 import dorkbox.messageBus.*
 import dorkbox.messageBus.annotations.*
+import marx.assets.*
 import marx.engine.events.*
 import marx.engine.events.Events.App.Initialized
 import marx.engine.events.Events.App.Timestep
@@ -10,11 +11,10 @@ import marx.engine.events.Events.Window.Resize
 import marx.engine.input.*
 import marx.engine.layer.*
 import marx.engine.render.*
-import marx.engine.render.scene.*
+import marx.engine.scene.*
 import marx.engine.window.*
-import kotlin.reflect.*
 
-/*
+/**
  * This is the main entry for the marx engine. It
  */
 interface Application<API : RenderAPI> : IBus, LayerStack {
@@ -25,6 +25,7 @@ interface Application<API : RenderAPI> : IBus, LayerStack {
     var gameTime: Double
     var startTime: Long
     val currentTime: Long get() = System.nanoTime()
+    val root: AssetFolder get() = AssetFolder.ROOT
 
     /*This will get the render api for the specified [rendererType]**/
     val renderAPI: API
@@ -54,8 +55,8 @@ interface Application<API : RenderAPI> : IBus, LayerStack {
         eventbus.publishAsync(event)
     }
 
-    /*
-   NumberCalled upon updating of the game
+    /**
+     * Called upon updating of the game
      */
     fun onUpdate(event: Timestep) {
         for (layerId in size - 1 downTo 0) {
@@ -70,8 +71,8 @@ interface Application<API : RenderAPI> : IBus, LayerStack {
     fun onResize(event: Resize) =
         renderAPI.command.viewport(event.width to event.height, 0 to 0)
 
-    /*
-   This is called upon the start of the application
+    /**
+     * This is called upon the start of the application
      */
     fun start() {
         instance = this
@@ -85,8 +86,8 @@ interface Application<API : RenderAPI> : IBus, LayerStack {
         destroy()
     }
 
-    /*
-   This is the main update loop.
+    /**
+     * This is the main update loop.
      */
     fun update() {
         while (isRunning && !window.shouldClose) {
@@ -102,6 +103,9 @@ interface Application<API : RenderAPI> : IBus, LayerStack {
         }
     }
 
+    /**
+     * This posts the shutdown event and then procendes to shutdown the main application
+     */
     fun destroy() {
         publish(Events.App.Shutdown(this))
         shutdown()

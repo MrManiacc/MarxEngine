@@ -1,10 +1,9 @@
-package marx.engine.render.camera
+package marx.engine.camera
 
 import marx.engine.math.*
-import marx.engine.math.MathDSL.Conversions.scale
-import marx.engine.math.components.*
+import marx.engine.comps.*
 
-import marx.engine.math.components.Position.*
+import marx.engine.comps.Position.*
 
 import org.joml.*
 

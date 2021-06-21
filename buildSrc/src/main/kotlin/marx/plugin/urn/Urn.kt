@@ -21,7 +21,7 @@ data class Urn(
         val EMPTY = Urn("", "", "", null).apply { isEmpty = true }
 
         /*
-       NumberCreates a urn from the given string by parsing it.
+    Creates a urn from the given string by parsing it.
          */
         fun of(string: String): Urn {
             val scheme = string.substringBefore(":")

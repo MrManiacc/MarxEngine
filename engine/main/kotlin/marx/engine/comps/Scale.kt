@@ -1,4 +1,4 @@
-package marx.engine.math.components
+package marx.engine.comps
 
 import marx.engine.math.*
 

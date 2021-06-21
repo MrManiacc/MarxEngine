@@ -3,7 +3,7 @@ package marx.editor.dsl
 import imgui.*
 import marx.engine.math.*
 import marx.engine.math.MathDSL.Extensions.from
-import marx.engine.render.camera.*
+import marx.engine.camera.*
 
 object MarxGui {
     private val position: FloatArray = FloatArray(3)

@@ -21,6 +21,7 @@ modules = [
     "mod:window/",
     "mod:opengl/",
     "mod:editor/",
+    "mod:assets/"
 ]
 
 # This is imported from the engine's global extenisions.

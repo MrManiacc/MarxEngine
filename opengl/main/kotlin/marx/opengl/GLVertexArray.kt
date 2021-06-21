@@ -12,9 +12,7 @@ data class GLVertexArray(
 ) : VertexArray() {
     private var array: Int = -1
 
-    /*
-   NumberCreate the vertex array. Must be done after the given renderAPI is setup.
-     */
+    /*Createthe vertex array. Must be done after the given renderAPI is setup.*/
     override fun create() {
         if (array != -1) dispose()
         array = glGenVertexArrays()
@@ -22,41 +20,31 @@ data class GLVertexArray(
         buffers.forEach(Buffer::create)
     }
 
-    /*
-   NumberBinds this vertex array, after this is called you should be able to draw the element.
-     */
+    /*NumberBinds this vertex array, after this is called you should be able to draw the element.*/
     override fun bind() {
         glBindVertexArray(array)
     }
 
-    /*
-   NumberBinds the default 0 vertex array.
-     */
+    /*Binds the default 0 vertex array.*/
     override fun unbind() {
         glBindVertexArray(0)
     }
 
-    /*
-   This is used to dispose of the vertex array after we're done with it
-     */
+    /*This is used to dispose of the vertex array after we're done with it*/
     override fun dispose() {
         unbind()
         glDeleteVertexArrays(array)
         buffers.forEach(Buffer::destroy)
     }
 
-    /*
-   NumberAdds a vertex buffer to be rendered with EX. vertices, texture coords, etc.
-     */
+    /*NumberAdds a vertex buffer to be rendered with EX. vertices, texture coords, etc.*/
     override fun <T : Buffer.VertexBuffer> addVertexBuffer(vertexBuffer: T) =
         vertexBuffer.apply { buffers += this }
             .let {
                 log.info { "Added vertex buffer: $it" }
             }
 
-    /*
-   This allows for the use of drawing faced with indexes which reduces the render overhead
-     */
+    /*This allows for the use of drawing faced with indexes which reduces the render overhead*/
     override fun <T : Buffer.IndexBuffer> addIndexBuffer(indexBuffer: T) =
         indexBuffer.apply { buffers += this }
             .let {

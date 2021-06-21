@@ -22,7 +22,7 @@ class ModuleFile(val project: Project) {
     }
 
     /*
-   Number@return true when [parsed] is invalid. This means we have child projects
+@return true when [parsed] is invalid. This means we have child projects
      */
     val isLibrary: Boolean = parsed == null &&
             project.projectDir.containsRecursive { it.endsWith(".toml") }
@@ -82,13 +82,13 @@ class ModuleFile(val project: Project) {
 
     /*
    This will take a given file and recursively apply the predicate. This allows for
-   Numberrecursive matching of a given predicate
+recursive matching of a given predicate
      */
     private fun File.containsRecursive(predicate: Predicate<File>): Boolean = findRecursive(predicate) != null
 
     /*
    This will take a given file and recursively apply the predicate. This allows for
-   Numberrecursive matching of a given predicate
+recursive matching of a given predicate
      */
     private fun File.findRecursive(predicate: Predicate<File>): File? {
         if (this.isFile && predicate.test(this)) return this

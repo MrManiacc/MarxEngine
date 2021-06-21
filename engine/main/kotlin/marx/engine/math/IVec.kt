@@ -1,8 +1,6 @@
 package marx.engine.math
 
-import marx.engine.math.components.*
 import marx.engine.math.Comp.*
-import java.lang.Exception
 
 /**
  * This unifies all vectors.

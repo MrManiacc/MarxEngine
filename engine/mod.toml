@@ -21,7 +21,7 @@ bus = "com.dorkbox:MessageBus:$message_bus_version"
 guava = "com.google.guava:guava:$guava_version"
 imgui = "io.github.spair:imgui-java-binding:$imgui_version,io.github.spair:imgui-java-lwjgl3:$imgui_version"
 imgui_native = "io.github.spair:imgui-java-$natives-ft:$imgui_version"
-reflect = "org.jetbrains.kotlin:kotlin-reflect:1.4.32"
+reflect = "org.jetbrains.kotlin:kotlin-reflect:1.5.10"
 repos = "https://nexus.devsrsouza.com.br/repository/maven-public/"
 joml = "org.joml:joml:$joml_version"
 
@@ -38,7 +38,7 @@ repos = ["$repos"] # The repositories to be mapped to the module.
 # A platform is something that allows the speicfication of a single version number,
 # thus allowing child jars to drop the version number off the end. They must match the group tag
 platforms = ["$lwjgl_bom"]
-
+modules = ["mod:assets/"]
 #The go to configuration. Can be any typed out gradle depencdcey, and can be replaced with extenions (either local or global)
 implements = [
     "$lwjgl",

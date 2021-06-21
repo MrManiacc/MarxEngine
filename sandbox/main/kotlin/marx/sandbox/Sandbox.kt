@@ -3,6 +3,7 @@ package marx.sandbox
 import com.google.common.collect.*
 import dorkbox.messageBus.*
 import dorkbox.messageBus.annotations.*
+import imgui.*
 import marx.editor.camera.*
 import marx.editor.layer.*
 import marx.editor.wrapper.*
@@ -13,8 +14,10 @@ import marx.engine.events.Events.Window.Initialized
 import marx.engine.input.*
 import marx.engine.layer.*
 import marx.engine.render.*
-import marx.engine.render.camera.*
-import marx.engine.render.scene.*
+import marx.engine.camera.*
+import marx.engine.events.*
+import marx.engine.events.Events.Gui.*
+import marx.engine.scene.*
 import marx.engine.window.*
 import marx.opengl.*
 import marx.sandbox.layer.*
@@ -64,8 +67,6 @@ object Sandbox : Application<GLRenderAPI> {
         pushLayer(debugLayer)
     }
 
-
-
     /* This maps the layer's accordingly*/
     @Subscribe fun onKeyPressed(event: KeyPress) {
         when (event.key) {
@@ -92,6 +93,8 @@ object Sandbox : Application<GLRenderAPI> {
             }
         }
     }
+
+
 
     /* Called upon the window closing, we pass on the destroy event the various APIS*/
     @Subscribe override fun destroy(event: Window.Destroy) {

@@ -1,9 +1,9 @@
 package marx.engine.math
 
-import marx.engine.math.components.AxisAngle.*
-import marx.engine.math.components.Position.*
-import marx.engine.math.components.Rotation.*
-import marx.engine.math.components.Scale.*
+import marx.engine.comps.AxisAngle.*
+import marx.engine.comps.Position.*
+import marx.engine.comps.Rotation.*
+import marx.engine.comps.Scale.*
 import marx.engine.utils.MathUtils.radians
 import org.joml.*
 

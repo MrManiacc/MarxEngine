@@ -10,6 +10,7 @@ import marx.engine.render.*
 import marx.opengl.*
 import marx.opengl.GLBuffer.GLIndexBuffer
 import marx.opengl.GLBuffer.GLVertexBuffer
+import marx.opengl.data.*
 import mu.*
 import org.lwjgl.glfw.GLFW.*
 import org.slf4j.*

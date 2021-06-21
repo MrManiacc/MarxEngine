@@ -2,7 +2,7 @@ package marx.opengl
 
 import marx.engine.render.*
 import marx.engine.render.Buffer.*
-import marx.engine.render.scene.*
+import marx.engine.scene.*
 import marx.engine.window.*
 import org.lwjgl.glfw.*
 import org.lwjgl.opengl.*
@@ -14,7 +14,7 @@ import org.lwjgl.system.*
  */
 open class GLRenderAPI(val window: IWindow, scene: RenderScene) : RenderAPI(GLRenderCommand(window), scene) {
     /*
-   NumberInitialize the given graphics context
+Initialize the given graphics context
      */
     override fun init() {
         // Make the OpenGL context current
@@ -28,7 +28,7 @@ open class GLRenderAPI(val window: IWindow, scene: RenderScene) : RenderAPI(GLRe
     }
 
     /*
-   NumberDraws the given vertex array instanced, meaning we can render many of these statically.
+Draws the given vertex array instanced, meaning we can render many of these statically.
      */
     override fun drawIndexed(array: VertexArray) {
         glDrawElements(GL_TRIANGLES, array[IndexBuffer::class].indices.size, GL_UNSIGNED_INT, MemoryUtil.NULL)

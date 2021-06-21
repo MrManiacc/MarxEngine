@@ -1,11 +1,10 @@
 package marx.engine.render
 
 import marx.engine.math.*
-import marx.engine.render.camera.*
-import marx.engine.render.scene.*
-import org.joml.*
+import marx.engine.camera.*
+import marx.engine.scene.*
 
-/*
+/**
  * This is the core of all of the rendering done throughout the engine.
  * It's purpose is to provide a platform agnostic rendering subset of tools.
  */
@@ -20,14 +19,10 @@ abstract class RenderAPI(
 
     abstract fun init()
 
-    /*
-   NumberDraws the given vertex array instanced, meaning we can render many of these statically.
-     */
+    /*NumberDraws the given vertex array instanced, meaning we can render many of these statically.*/
     abstract fun drawIndexed(array: VertexArray)
 
-    /*
-   This will register the api with the [Renderer]
-     */
+    /*This will register the api with the [Renderer]*/
     open fun register() =
         Renderer.set(this::class, this)
 
@@ -41,16 +36,11 @@ abstract class RenderAPI(
                 get() = Renderer()
             override var camera: Camera<*> = Camera.Null()
 
-
-            /*
-           This will start a new scene
-             */
+            /*This will start a new scene*/
             override fun beginScene(camera: Camera<*>) = Unit
             override fun submit(array: VertexArray) = Unit
 
-            /*
-           This method should be overloaded for all of the various types of things we can submit
-             */
+            /*This method should be overloaded for all of the various types of things we can submit*/
             override fun submit(
                 array: VertexArray,
                 shader: Shader,
@@ -58,7 +48,7 @@ abstract class RenderAPI(
             ) {
 
             }
-
+            /*This wil send some arrbitrary data off to the */
             override fun submit(
                 array: VertexArray,
                 shaderIn: Shader,
@@ -69,9 +59,7 @@ abstract class RenderAPI(
                 TODO("Not yet implemented")
             }
 
-            /*
-           This method should be overloaded for all of the various types of things we flush
-             */
+            /*This method should be overloaded for all of the various types of things we flush*/
             override fun flush() = Unit
             override fun endScene() = Unit
         }) {

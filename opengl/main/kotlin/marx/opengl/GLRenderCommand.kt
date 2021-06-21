@@ -11,14 +11,14 @@ import org.lwjgl.opengl.GL11.*
  */
 class GLRenderCommand(val window: IWindow) : RenderCommand {
     /*
-   NumberAllows for viewport resizing
+Allows for viewport resizing
      */
     override fun viewport(size: Pair<Int, Int>, pos: Pair<Int, Int>) {
         glViewport(pos.first, pos.second, size.first, size.second)
     }
 
     /*
-   NumberClear the screen with the given color
+Clear the screen with the given color
      */
     override fun clear(color: FloatArray?, clearFlags: ClearFlags) {
         when (clearFlags) {
@@ -38,14 +38,14 @@ class GLRenderCommand(val window: IWindow) : RenderCommand {
     }
 
     /*
-   NumberSwap the given buffers of the graphics context
+Swap the given buffers of the graphics context
      */
     override fun swap() {
         window.swapBuffers()
     }
 
     /*
-   NumberPoll the input for the graphics context
+Poll the input for the graphics context
      */
     override fun poll() {
         window.pollInput()

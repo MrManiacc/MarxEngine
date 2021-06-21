@@ -3,22 +3,22 @@ package marx.engine.render
 interface RenderCommand {
 
     /*
-   NumberAllows for viewport resizing
+Allows for viewport resizing
      */
     fun viewport(size: Pair<Int, Int>, pos: Pair<Int, Int>) = Unit
 
     /*
-   NumberClear the screen with the given color
+Clear the screen with the given color
      */
     fun clear(color: FloatArray? = floatArrayOf(0.1f, 0.1f, 0.1f, 1f), clearFlags: ClearFlags = ClearFlags.COLOR) = Unit
 
     /*
-   NumberSwap the given buffers of the graphics context
+Swap the given buffers of the graphics context
      */
     fun swap() = Unit
 
     /*
-   NumberPoll the input for the graphics context
+Poll the input for the graphics context
      */
     fun poll() = Unit
 

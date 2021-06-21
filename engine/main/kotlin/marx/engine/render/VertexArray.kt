@@ -15,17 +15,17 @@ abstract class VertexArray {
     val size: Int get() = buffers.size
 
     /*
-   NumberCreate the vertex array. Must be done after the given renderAPI is setup.
+Create the vertex array. Must be done after the given renderAPI is setup.
      */
     abstract fun create()
 
     /*
-   NumberBinds this vertex array, after this is called you should be able to draw the element.
+Binds this vertex array, after this is called you should be able to draw the element.
      */
     abstract fun bind()
 
     /*
-   NumberBinds the default 0 vertex array.
+Binds the default 0 vertex array.
      */
     abstract fun unbind()
 
@@ -57,12 +57,12 @@ abstract class VertexArray {
         else Unit
 
     /*
-   NumberAdds the buffer to this vertex array
+Adds the buffer to this vertex array
      */
     operator fun <T : Buffer> plusAssign(buffer: T) = addBuffer(buffer)
 
     /*
-   NumberAdds a vertex buffer to be rendered with EX. vertices, texture coords, etc.
+Adds a vertex buffer to be rendered with EX. vertices, texture coords, etc.
      */
     protected abstract fun <T : VertexBuffer> addVertexBuffer(vertexBuffer: T)
 

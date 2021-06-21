@@ -4,7 +4,7 @@ import marx.engine.*
 import marx.engine.events.*
 import marx.engine.events.Events.App.Timestep
 import marx.engine.render.*
-import marx.engine.render.scene.*
+import marx.engine.scene.*
 import kotlin.reflect.*
 
 /*
@@ -18,5 +18,4 @@ abstract class Layer<API : RenderAPI>(val app: Application<*>, private val rende
     open fun onDetach() = Unit
     abstract fun onUpdate(update: Timestep)
     open fun onEvent(event: Event){}
-
 }

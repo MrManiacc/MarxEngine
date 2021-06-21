@@ -2,8 +2,8 @@ package marx.opengl
 
 import marx.engine.math.*
 import marx.engine.render.*
-import marx.engine.render.camera.*
-import marx.engine.render.scene.*
+import marx.engine.camera.*
+import marx.engine.scene.*
 import kotlin.reflect.*
 
 /**

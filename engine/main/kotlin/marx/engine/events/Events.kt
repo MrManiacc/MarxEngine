@@ -13,7 +13,7 @@ import marx.engine.render.Shader as RenderShader
 object Events {
 
     /*
-   NumberUsed for imgui related events
+Used for imgui related events
      */
     class Shader {
         data class Compiled(
@@ -23,7 +23,7 @@ object Events {
     }
 
     /*
-   NumberUsed for imgui related events
+Used for imgui related events
      */
     class Gui {
         class ViewportOverlay : Event()

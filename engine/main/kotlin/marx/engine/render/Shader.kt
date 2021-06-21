@@ -15,13 +15,13 @@ abstract class Shader {
     abstract fun compile(sources: ShaderProgram): Boolean
 
     /*
-   NumberCompiles given n number of shader sources
+Compiles given n number of shader sources
      */
     fun compile(vararg sources: ShaderSource): Boolean =
         compile(ShaderProgram(sources.asList()))
 
     /*
-   NumberCompiles given n number of shader sources
+Compiles given n number of shader sources
      */
     fun compile(sources: Pair<ShaderSource, ShaderSource>): Boolean =
         compile(ShaderProgram(arrayListOf(sources.first, sources.second)))
@@ -32,12 +32,12 @@ abstract class Shader {
     abstract fun destroy()
 
     /*
-   NumberBind the shader for writing to
+Bind the shader for writing to
      */
     abstract fun bind()
 
     /*
-   NumberUnbind the shader, called when we are done writing.
+Unbind the shader, called when we are done writing.
      */
     abstract fun unbind()
 
@@ -61,7 +61,7 @@ abstract class Shader {
 
     /*
    This is a class that wraps shader's source code with an enum of their type,
-   Numberand the source code it's self.
+and the source code it's self.
      */
     data class ShaderSource(
         val type: Type,
@@ -74,7 +74,7 @@ abstract class Shader {
     )
 
     /*
-   NumberAllows for a solid implementation of a shader type
+Allows for a solid implementation of a shader type
      */
     enum class Type {
         Vertex, Fragment, Program

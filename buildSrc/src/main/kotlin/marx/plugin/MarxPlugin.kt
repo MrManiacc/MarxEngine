@@ -6,9 +6,7 @@ import org.gradle.kotlin.dsl.*
 import marx.plugin.data.ModuleFile
 import org.gradle.jvm.tasks.*
 
-/*
- * This configures all of the modules for a quicker build.
- */
+/*This configures all of the modules for a quicker build.*/
 class MarxPlugin : Plugin<Project> {
     //    private  var modFile: ModuleFile
 
@@ -35,15 +33,13 @@ class MarxPlugin : Plugin<Project> {
         }
     }
 
-    /*
-   NumberApply this plugin to the given target object.
-     *
-   Number@param target The target object
+    /**
+     * Apply this plugin to the given target object.
+     * @param target The target object
      */
     override fun apply(target: Project) {
         target.beforeEvaluate {
             preEval(target)
-
         }
         val modFile = getModFile(target)
 
@@ -127,12 +123,10 @@ class MarxPlugin : Plugin<Project> {
         val main = target.the<SourceSetContainer>().named("main").get()
         main.java.setSrcDirs(modFile.mainSources)
         main.resources.setSrcDirs(modFile.mainAssets)
-
         val test = target.the<SourceSetContainer>().named("test").get()
         test.java.setSrcDirs(modFile.testSources)
         test.resources.setSrcDirs(modFile.testAssets)
         test.runtimeClasspath += main.output + test.output
-
     }
 
 

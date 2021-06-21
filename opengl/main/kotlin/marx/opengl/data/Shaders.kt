@@ -1,16 +1,11 @@
-package marx.opengl
+package marx.opengl.data
 
 import marx.engine.render.Shader.*
-import org.joml.*
 
-/*
- * Stores a group of named shader sources.
- */
+/*Stores a group of named shader sources.*/
 object Shaders {
 
-    /*
-   NumberCompiles a simple shader that has it's version appended based upon what's passed in
-     */
+    /*Compiles a simple shader that has it's version appended based upon what's passed in     */
     fun simple(
         version: String = "330",
         core: Boolean = true
@@ -47,9 +42,7 @@ object Shaders {
         )
     }
 
-    /*
-   NumberCompiles a simple shader that has it's version appended based upon what's passed in
-     */
+    /*A simple shader that has it's version appended based upon what's passed in*/
     fun flatShader(
         version: String = "330",
         core: Boolean = true
@@ -62,13 +55,13 @@ object Shaders {
                 
                 uniform mat4 u_ViewProjection; //Calculations done on cpu side
                 uniform mat4 u_ModelMatrix;
-                
+                   
                 out vec3 v_Pos;
                 
                 void main(){
                     gl_Position = u_ViewProjection * u_ModelMatrix * vec4(a_Pos, 1.0);                    
                     v_Pos = a_Pos;         
-                }
+                } 
             """.trimIndent()
             ) to ShaderSource(
                 Type.Fragment,
@@ -77,7 +70,6 @@ object Shaders {
                 in vec3 v_Pos;
                 
                 uniform vec3 u_Color;
-                
                 
                 void main(){
                     color = vec4(u_Color, 1.0);

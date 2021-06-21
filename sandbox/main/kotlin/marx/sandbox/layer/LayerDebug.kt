@@ -12,7 +12,6 @@ import marx.engine.events.Events.Input.KeyPress
 import marx.engine.events.Events.Shader.*
 import marx.engine.layer.*
 import marx.engine.math.*
-import marx.engine.math.MathDSL.Conversions.rads3
 import marx.engine.math.MathDSL.Extensions.by
 import marx.engine.math.MathDSL.Extensions.via
 import marx.engine.render.*
@@ -20,6 +19,7 @@ import marx.engine.utils.StringUtils.format
 import marx.opengl.*
 import marx.opengl.GLBuffer.GLIndexBuffer
 import marx.opengl.GLBuffer.GLVertexBuffer
+import marx.opengl.data.*
 import marx.sandbox.*
 import mu.*
 import org.joml.*
@@ -123,6 +123,7 @@ class LayerDebug(app: Application<*>) : Layer<DebugRenderAPI>(app, DebugRenderAP
 
     /*Draws our debug test scene*/
     private fun drawScene() {
+
         scene.sceneOf(Sandbox.editorCamera) {
             //TODO remove this it's EXPENSIVE!!!
             for (y in -10..10) {
@@ -194,6 +195,15 @@ class LayerDebug(app: Application<*>) : Layer<DebugRenderAPI>(app, DebugRenderAP
                 log.warn("Updated camera")
             }
         }
+        ImGui.end()
+
+
+
+
+        if (ImGui.begin("testing")) {
+            ImGui.text("testing: ${Sandbox.root}")
+        }
+
         ImGui.end()
 
     }

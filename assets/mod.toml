@@ -1,0 +1,29 @@
+#Allows for string replacment extensions.
+[ext]
+dir = "__root_dir__/assets" #gets the current dir of the module.toml
+
+#The root build structure for the module.
+[main]
+id = "assets"
+version = "1.0.0-SNAPSHOT"
+
+[build]
+repos = ["$repos"]
+modules = []
+platforms = []
+runtimes = []
+implements = [
+    "$guava",
+    "$bus",
+    "$logger"
+]
+
+#This provides the directories for the main source set.
+[build.main]
+sources = ["$dir/main/kotlin"]
+assets = ["$dir/main/assets"]
+
+#This provides the directories for the test source set..
+[build.test]
+sources = ["$dir/test/kotlin"]
+assets = ["$dir/test/assets"]

@@ -2,7 +2,7 @@ package marx.editor.camera
 
 import dorkbox.messageBus.annotations.*
 import marx.engine.events.*
-import marx.engine.render.camera.*
+import marx.engine.camera.*
 import marx.engine.utils.MathUtils.radians
 import org.joml.*
 

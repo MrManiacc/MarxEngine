@@ -1,8 +1,8 @@
-package marx.engine.render.scene
+package marx.engine.scene
 
 import marx.engine.math.*
 import marx.engine.render.*
-import marx.engine.render.camera.*
+import marx.engine.camera.*
 
 /**
  * This allows us to render a scene. It is platform agnostic
