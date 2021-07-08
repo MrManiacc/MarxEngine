@@ -12,6 +12,13 @@ import marx.engine.render.Shader as RenderShader
  */
 object Events {
 
+    /**
+     * Used for asset related actvities
+     */
+    object Asset {
+
+    }
+
     /*
 Used for imgui related events
      */

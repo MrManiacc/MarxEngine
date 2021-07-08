@@ -1,0 +1,40 @@
+#Allows for string replacment extensions.
+[ext]
+dir = "__root_dir__/ext" #gets the current dir of the module.toml
+base_hoplite = "com.sksamuel.hoplite:hoplite"
+core_hoplite = "$base_hoplite-core:1.4.3"
+toml_hoplite = "$base_hoplite-toml:1.4.3"
+fast_util_version = "8.5.4"
+[ext.shared]
+hoplite = "$core_hoplite,$toml_hoplite"
+
+[ext.shared]
+fast_util="it.unimi.dsi:fastutil:$fast_util_version,it.unimi.dsi:fastutil-core:$fast_util_version,it.unimi.dsi:fastutil-extra:$fast_util_version"
+#The root build structure for the module.
+[main]
+id = "ext"
+version = "1.0.0-SNAPSHOT"
+
+#Everything related to the build process goes here.
+[build]
+#The repositories to be mapped to the module.
+#By default this already includes mavenCentral.
+repos = ["$repos"]
+
+implements = [
+    "$guava",
+    "$bus",
+    "$logger",
+    "$hoplite",
+    "$fast_util"
+]
+
+#This provides the directories for the main source set.
+[build.main]
+sources = ["$dir/main/kotlin"]
+assets = ["$dir/main/assets"]
+
+#This provides the directories for the test source set..
+[build.test]
+sources = ["$dir/test/kotlin"]
+assets = ["$dir/test/assets"]

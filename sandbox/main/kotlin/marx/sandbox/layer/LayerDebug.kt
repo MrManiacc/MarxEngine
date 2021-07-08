@@ -25,6 +25,9 @@ import mu.*
 import org.joml.*
 import org.lwjgl.glfw.GLFW.*
 import org.slf4j.*
+import kotlin.io.path.ExperimentalPathApi
+
+@ExperimentalPathApi
 
 /*This layer is used for debugging purpose*/
 class LayerDebug(app: Application<*>) : Layer<DebugRenderAPI>(app, DebugRenderAPI::class, "debug-layer") {
@@ -199,12 +202,6 @@ class LayerDebug(app: Application<*>) : Layer<DebugRenderAPI>(app, DebugRenderAP
 
 
 
-
-        if (ImGui.begin("testing")) {
-            ImGui.text("testing: ${Sandbox.root}")
-        }
-
-        ImGui.end()
 
     }
 

@@ -67,8 +67,6 @@ class MarxRegistry : Plugin<Project> {
         override fun toString(): String {
             return "Registry(modules=$urns)"
         }
-
-
     }
 
     companion object {

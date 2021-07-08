@@ -38,7 +38,7 @@ repos = ["$repos"] # The repositories to be mapped to the module.
 # A platform is something that allows the speicfication of a single version number,
 # thus allowing child jars to drop the version number off the end. They must match the group tag
 platforms = ["$lwjgl_bom"]
-modules = ["mod:assets/"]
+modules = ["mod:assets/", "mod:ext/"]
 #The go to configuration. Can be any typed out gradle depencdcey, and can be replaced with extenions (either local or global)
 implements = [
     "$lwjgl",

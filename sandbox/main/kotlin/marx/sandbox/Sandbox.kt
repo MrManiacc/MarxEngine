@@ -3,7 +3,6 @@ package marx.sandbox
 import com.google.common.collect.*
 import dorkbox.messageBus.*
 import dorkbox.messageBus.annotations.*
-import imgui.*
 import marx.editor.camera.*
 import marx.editor.layer.*
 import marx.editor.wrapper.*
@@ -15,8 +14,6 @@ import marx.engine.input.*
 import marx.engine.layer.*
 import marx.engine.render.*
 import marx.engine.camera.*
-import marx.engine.events.*
-import marx.engine.events.Events.Gui.*
 import marx.engine.scene.*
 import marx.engine.window.*
 import marx.opengl.*
@@ -25,11 +22,15 @@ import marx.window.*
 import mu.*
 import org.lwjgl.glfw.GLFW.*
 import org.slf4j.*
+import java.nio.file.Path
+import kotlin.io.path.ExperimentalPathApi
+import kotlin.io.path.Path
 
 /**
  * This is the front on the engine. Its the sandbox/the application used for testing the engine/libraries.
  */
-object Sandbox : Application<GLRenderAPI> {
+@ExperimentalPathApi
+object Sandbox : Application<GLRenderAPI>(Path(".")) {
     override val log: Logger = KotlinLogging.logger { }
     override val eventbus: MessageBus = MessageBus(4)
     override val window: IWindow = GlfwWindow(title = "Sandbox, glfw", app = this)
@@ -63,12 +64,14 @@ object Sandbox : Application<GLRenderAPI> {
     }
 
     /*This is used to initialized our layers*/
-    @Subscribe fun onGLInitialized(event: Initialized) {
+    @Subscribe
+    fun onGLInitialized(event: Initialized) {
         pushLayer(debugLayer)
     }
 
     /* This maps the layer's accordingly*/
-    @Subscribe fun onKeyPressed(event: KeyPress) {
+    @Subscribe
+    fun onKeyPressed(event: KeyPress) {
         when (event.key) {
             GLFW_KEY_KP_0 -> {
                 layers.clear()
@@ -95,9 +98,9 @@ object Sandbox : Application<GLRenderAPI> {
     }
 
 
-
     /* Called upon the window closing, we pass on the destroy event the various APIS*/
-    @Subscribe override fun destroy(event: Window.Destroy) {
+    @Subscribe
+    override fun destroy(event: Window.Destroy) {
         super.destroy(event)
         debugAPI.dispose()
         renderAPI.dispose()

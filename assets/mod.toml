@@ -9,9 +9,6 @@ version = "1.0.0-SNAPSHOT"
 
 [build]
 repos = ["$repos"]
-modules = []
-platforms = []
-runtimes = []
 implements = [
     "$guava",
     "$bus",

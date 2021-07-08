@@ -10,7 +10,7 @@ import org.gradle.internal.os.*
 import java.lang.Exception
 import java.util.function.*
 
-/*
+/**
  * This will parse out all of the data associated with a mod.toml file
  */
 class ModuleFile(val project: Project) {
@@ -20,21 +20,13 @@ class ModuleFile(val project: Project) {
         project.logger.warn("Couldn't find module file for ${project.name}, this is likely because it's a library")
         null
     }
-
-    /*
-@return true when [parsed] is invalid. This means we have child projects
-     */
-    val isLibrary: Boolean = parsed == null &&
-            project.projectDir.containsRecursive { it.endsWith(".toml") }
-
+    val isLibrary: Boolean = parsed == null && project.projectDir.containsRecursive { it.endsWith(".toml") }
     val isValid: Boolean = (parsed?.hasErrors() == false) || isLibrary
-
-    val errorMessage: String =
-        with(StringBuilder()) {
-            if (!isLibrary)
-                parsed?.errors()?.forEach { append(it.message.toString()).append("\n") }
-            else append("we are a library (contains child module with mod.toml)").append("\n")
-        }.toString()
+    val errorMessage: String = with(StringBuilder()) {
+        if (!isLibrary)
+            parsed?.errors()?.forEach { append(it.message.toString()).append("\n") }
+        else append("we are a library (contains child module with mod.toml)").append("\n")
+    }.toString()
     var id: String = parsed?.getString("main.id") ?: "undefined"
         private set
     var version: String = parsed?.getString("main.version") ?: "undefined"
@@ -65,7 +57,6 @@ class ModuleFile(val project: Project) {
     val imports: MutableMap<Urn, Project> = HashMap()
     val isRunnable: Boolean = parsed?.contains("main.entryPoint") ?: false
     var entryPoint: String = parsed?.getString("main.entryPoint") ?: "undefined"
-
     val platform: String
         get() = when (OperatingSystem.current()!!) {
             OperatingSystem.WINDOWS -> "windows"
@@ -80,15 +71,15 @@ class ModuleFile(val project: Project) {
         "__platform__" to { platform }
     )
 
-    /*
-   This will take a given file and recursively apply the predicate. This allows for
-recursive matching of a given predicate
+    /**
+     * This will take a given file and recursively apply the predicate. This allows for
+     * recursive matching of a given predicate
      */
     private fun File.containsRecursive(predicate: Predicate<File>): Boolean = findRecursive(predicate) != null
 
-    /*
-   This will take a given file and recursively apply the predicate. This allows for
-recursive matching of a given predicate
+    /**
+     *  This will take a given file and recursively apply the predicate. This allows for
+     * recursive matching of a given predicate
      */
     private fun File.findRecursive(predicate: Predicate<File>): File? {
         if (this.isFile && predicate.test(this)) return this
@@ -99,8 +90,8 @@ recursive matching of a given predicate
         return null
     }
 
-    /*
-   This will update all of the variables with the correct extensions
+    /**
+     *  This will update all of the variables with the correct extensions
      */
     fun map() {
         mapDefaultExtensions()
@@ -146,8 +137,8 @@ recursive matching of a given predicate
         if (isRunnable) this.entryPoint = mapString(entryPoint, map)
     }
 
-    /*
-   This will put all of our shared values in the global map
+    /**
+     * This will put all of our shared values in the global map
      */
     fun mapGlobals(map: MutableMap<String, String>) {
         for (entry in this.sharedExtensions) {
@@ -156,6 +147,9 @@ recursive matching of a given predicate
         }
     }
 
+    /**
+     * This will take the string data
+     */
     private fun mapString(
         stringIn: String,
         map: Map<String, String>

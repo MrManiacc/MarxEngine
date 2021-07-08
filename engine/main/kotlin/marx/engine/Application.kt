@@ -2,7 +2,7 @@ package marx.engine
 
 import dorkbox.messageBus.*
 import dorkbox.messageBus.annotations.*
-import marx.assets.*
+import marx.assets.fs.VirtualFileSystem
 import marx.engine.events.*
 import marx.engine.events.Events.App.Initialized
 import marx.engine.events.Events.App.Timestep
@@ -13,27 +13,32 @@ import marx.engine.layer.*
 import marx.engine.render.*
 import marx.engine.scene.*
 import marx.engine.window.*
+import java.nio.file.Path
+import kotlin.io.path.ExperimentalPathApi
 
 /**
  * This is the main entry for the marx engine. It
  */
-interface Application<API : RenderAPI> : IBus, LayerStack {
-    val eventbus: MessageBus
-    val window: IWindow
-    val input: IInput
-    var isRunning: Boolean
-    var gameTime: Double
-    var startTime: Long
+abstract class Application<API : RenderAPI>(assetPath: Path) : IBus, LayerStack {
+    abstract val eventbus: MessageBus
+    abstract val window: IWindow
+    abstract val input: IInput
+    abstract var isRunning: Boolean
+    abstract var gameTime: Double
+    abstract var startTime: Long
     val currentTime: Long get() = System.nanoTime()
-    val root: AssetFolder get() = AssetFolder.ROOT
+    @ExperimentalPathApi
+    protected val vsf: VirtualFileSystem = VirtualFileSystem.of(assetPath)
 
     /*This will get the render api for the specified [rendererType]**/
-    val renderAPI: API
+    abstract val renderAPI: API
+
 
     /*This is the root scene for the application**/
-    val scene: RenderScene
+    abstract val scene: RenderScene
 
     override fun subscribe(listener: Any) = eventbus.subscribe(listener)
+
 
     override fun <T : IEvent> publish(event: T) {
         if (event is Event)
@@ -58,7 +63,7 @@ interface Application<API : RenderAPI> : IBus, LayerStack {
     /**
      * Called upon updating of the game
      */
-    fun onUpdate(event: Timestep) {
+    open fun onUpdate(event: Timestep) {
         for (layerId in size - 1 downTo 0) {
             val layer = layers[layerId]
             layer.onUpdate(event)
@@ -74,8 +79,11 @@ interface Application<API : RenderAPI> : IBus, LayerStack {
     /**
      * This is called upon the start of the application
      */
-    fun start() {
+    @ExperimentalPathApi
+
+    open fun start() {
         instance = this
+        vsf.refresh(true)
         subscribe(input)
         instance = this
         isRunning = true
@@ -89,7 +97,7 @@ interface Application<API : RenderAPI> : IBus, LayerStack {
     /**
      * This is the main update loop.
      */
-    fun update() {
+    open fun update() {
         while (isRunning && !window.shouldClose) {
             renderAPI.command.clear(floatArrayOf(0.1f, 0.1f, 0.1f))
             val now = currentTime
@@ -106,14 +114,16 @@ interface Application<API : RenderAPI> : IBus, LayerStack {
     /**
      * This posts the shutdown event and then procendes to shutdown the main application
      */
-    fun destroy() {
+    @ExperimentalPathApi
+
+    open fun destroy() {
         publish(Events.App.Shutdown(this))
         shutdown()
         isRunning = false
     }
 
     @Subscribe
-    fun destroy(event: Window.Destroy) = renderAPI.dispose()
+    open fun destroy(event: Window.Destroy) = renderAPI.dispose()
 
     override fun shutdown() = eventbus.shutdown()
 

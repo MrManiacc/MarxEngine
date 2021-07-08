@@ -18,6 +18,7 @@ repos = ["https://nexus.devsrsouza.com.br/repository/maven-public/"]
 modules = [
     "mod:engine/",
     "mod:opengl/",
+    "mod:ext/",
 ]
 
 # This is imported from the engine's global extenisions.

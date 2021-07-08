@@ -38,6 +38,10 @@ class LayerImGui(app: Application<*>) : Layer<DebugRenderAPI>(app, DebugRenderAP
 
     /*This should render the imgui properties windows on the sidebar*/
     private fun renderProperties() {
+//        with(MarxUI){
+//            label("testing#34324", "Testing")
+//        }
+
         app.publish(propertiesEvent)
         if (MarxGui.transform("testing", transform, 0.1f))
             println("updated transform!")

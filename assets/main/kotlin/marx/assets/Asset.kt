@@ -1,28 +1,41 @@
 package marx.assets
 
+import marx.assets.fs.VirtualFile
+import kotlin.io.path.ExperimentalPathApi
+
 /**
- * Represents an asset. They can be reloaded but are generally expected to always be accessible or at the very least able
- * to be loaded at render time. They should be able to be "in memory" meaning they can be created via source code. They should
- * also be able to be created via files automatically. They should be specific loaders (which will be scanned at runtime) that can
- * loaded specific file extension types and map them with their respective resource name. This should all be done via some registry
- * system. Assets that are loaded via file should be accessible via an annotation or easy kotlin-dsl method.
+ * This is the main class that will be instantiated for individual assets. It should be able to refresh it's instance
+ * on the fly using new [AssetData]. It should be able to dispose of it's self as well, which should be handled by the
+ * [AssetType]
  */
-abstract class Asset<T : Asset<T>>(protected val type: AssetType<T>) {
+interface Asset<DATA : AssetData> {
 
     /**
-     * All assets are required to have a name. This *SHOULD* include the extension.
-     * For example: -> test.mat
+     * This represents the actual path to the assets. This can be relative or absolute
      */
-    abstract val name: String
+    @ExperimentalPathApi
+    val file: VirtualFile
+
+    /**@return the name of the current path**/
+    @ExperimentalPathApi
+    val name: String get() = file.name
 
     /**
-     * This should be the assets name without the extension. This **Could** be done dynamically,
-     * but would be better to be done statically as it would be an extra strain for no reason.
+     * This reloads the current instance of the asset with the new [data]. This should only be called at the appropriate
+     * time, for example if this asset were and instance of say a texture asset,
      */
-    abstract val displayName: String
+    fun load(data: DATA)
 
     /**
-     * This should be the
+     * This should save the the asset.
      */
-    abstract val parent: AssetFolder
+    fun save(): DATA
+
+
+    /**
+     * This should cleanup/destroy all of the instance data, for a mesh this would mean that it unloads/deletes
+     * all of it's opengl context data like vertex buffer objects, frame buffer objects, etc.
+     */
+    fun dispose() {}
+
 }

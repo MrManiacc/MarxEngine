@@ -3,7 +3,6 @@ package marx.opengl
 import marx.engine.render.*
 import marx.engine.render.RenderCommand.*
 import marx.engine.window.*
-import org.lwjgl.opengl.*
 import org.lwjgl.opengl.GL11.*
 
 /*

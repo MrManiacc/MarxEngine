@@ -1,8 +1,6 @@
 package marx.engine.render
 
-import com.google.common.primitives.*
 import java.lang.IllegalStateException
-import kotlin.reflect.full.*
 import kotlin.reflect.jvm.*
 
 /*

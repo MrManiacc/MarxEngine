@@ -1,0 +1,12 @@
+<<?xml version="1.0" encoding="UTF-8"?>
+<marx-plugin xmlns:xi="http://www.w3.org/2001/XInclude">
+<id>marx.core</id>
+<name>MARX ENGINE</name>
+
+
+<extensions namespace="marx.core">
+
+</extensions>
+
+
+</marx-plugin>

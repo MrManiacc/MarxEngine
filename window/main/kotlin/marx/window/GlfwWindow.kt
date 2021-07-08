@@ -12,7 +12,7 @@ import org.lwjgl.glfw.*
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.system.MemoryStack.*
 import org.lwjgl.system.MemoryUtil.*
-
+import kotlin.io.path.ExperimentalPathApi
 data class GlfwWindow(
     override val width: Int = 1920,
     override val height: Int = 1080,
@@ -86,6 +86,7 @@ data class GlfwWindow(
     }
 
     @Subscribe
+    @ExperimentalPathApi
     fun onKeyPress(event: KeyPress) {
         if (event.key == GLFW_KEY_F1)
             fullscreen = !fullscreen

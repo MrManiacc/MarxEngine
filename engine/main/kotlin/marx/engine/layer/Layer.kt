@@ -11,6 +11,7 @@ import kotlin.reflect.*
  * A layer is like a chunk of methods and variables that will be rendered to screen. They are boxed sections that render
  * specific things
  */
+
 abstract class Layer<API : RenderAPI>(val app: Application<*>, private val rendererType: KClass<API>, val name: String = "layer") {
     val renderAPI: API get() = Renderer(rendererType)
     val scene: RenderScene get() = renderAPI.scene

@@ -5,7 +5,6 @@ import marx.engine.events.Events.Shader.*
 import marx.engine.render.*
 import org.joml.*
 import org.lwjgl.opengl.GL20.*
-import java.nio.*
 
 /**
  * This is the shader implemented with opengl
